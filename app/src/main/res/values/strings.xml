@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Sangarodhak</string>
+
+    <string name="pref_data">PREF_DATA</string>
+    
+    <string name="pref_state">PREF_STATE</string>
+    <string name="pref_state_confirmed">PREF_STATE_CONFIRMED</string>
+    <string name="pref_state_recovered">PREF_STATE_RECOVERED</string>
+    <string name="pref_state_dead">PREF_STATE_DEAD</string>
+    <string name="pref_state_active">PREF_STATE_ACTIVE</string>
+
+    <string name="pref_country">PREF_COUNTRY</string>
+    <string name="pref_country_confirmed">PREF_COUNTRY_CONFIRMED</string>
+    <string name="pref_country_recovered">PREF_COUNTRY_RECOVERED</string>
+    <string name="pref_country_dead">PREF_COUNTRY_DEAD</string>
+    <string name="pref_country_active">PREF_COUNTRY_ACTIVE</string>
+
+    <string name="pref_district_confirmed">PREF_DISTRICT_CONFIRMED</string>
+
+
 </resources>
