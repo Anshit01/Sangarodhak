@@ -10,11 +10,20 @@
     <string name="pref_case_data_state_total_cases">PREF_STATE_TOTAL_CASES</string>
     <string name="pref_case_data_state_recovered">PREF_STATE_RECOVERED</string>
     <string name="pref_case_data_state_dead">PREF_STATE_DEAD</string>
+    <string name="pref_case_data_state_active">PREF_STATE_ACTIVE</string>
 
     <!--Country Data in Shared Preferences-->
     <string name="pref_case_data_country_name">PREF_COUNTRY_NAME</string>
     <string name="pref_case_data_country_total_cases">PREF_COUNTRY_TOTAL_CASES</string>
     <string name="pref_case_data_country_recovered">PREF_COUNTRY_RECOVERED</string>
     <string name="pref_case_data_country_dead">PREF_COUNTRY_DEAD</string>
+    <string name="pref_case_data_country_active">PREF_COUNTRY_ACTIVE</string>
+    
+    <string name="url_world_stats">https://api.covid19api.com/summary</string>
+    <string name="url_india_stats_mini">https://api.covid19api.com/live/country/india</string>
+    <string name="url_india_all_states">https://api.rootnet.in/covid19-in/stats/latest</string>
+    <string name="url_all_districts">https://api.covid19india.org/state_district_wise.json</string>
+
+    <string name="pref_district_confirmed">PREF_DISTRICT_CONFIRMED</string>
 
 </resources>

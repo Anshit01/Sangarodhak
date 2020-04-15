@@ -22,7 +22,17 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.hashbash.sangarodhak.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,14 +42,16 @@ import static android.content.Context.LOCATION_SERVICE;
 
 public class FragmentHome extends Fragment implements LocationListener {
 
-    TextView state[] = new TextView[4];
-    TextView country[] = new TextView[4];
 
-    Context context;
+    private SharedPreferences sharedPreferences;
+    private TextView state[] = new TextView[5];
+    private TextView country[] = new TextView[5];
 
-    LocationManager manager;
-    Geocoder geocoder;
-    List<Address> addresses;
+    private Context context;
+
+    private LocationManager manager;
+    private Geocoder geocoder;
+    private List<Address> addresses;
     private SharedPreferences preferences;
 
     public FragmentHome(Context context) {
@@ -57,11 +69,13 @@ public class FragmentHome extends Fragment implements LocationListener {
         state[1] = view.findViewById(R.id.state_total_cases);
         state[2] = view.findViewById(R.id.state_recovered);
         state[3] = view.findViewById(R.id.state_dead);
+        state[4] = view.findViewById(R.id.state_active);
 
         country[0] = view.findViewById(R.id.country_name);
         country[1] = view.findViewById(R.id.country_total_cases);
         country[2] = view.findViewById(R.id.country_recovered);
         country[3] = view.findViewById(R.id.country_dead);
+        country[4] = view.findViewById(R.id.country_active);
 
         getSharedPreferenceData();
 
@@ -70,7 +84,7 @@ public class FragmentHome extends Fragment implements LocationListener {
 
         if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30 * 1000, 10, this);
+                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3 * 1000, 0, this);
         } else if (!preferences.getString(getString(R.string.pref_case_data_state_total_cases), "hi").equals("hi"))
             Toast.makeText(context, "Location not Enabled, Showing last saved data", Toast.LENGTH_SHORT).show();
 
@@ -79,39 +93,94 @@ public class FragmentHome extends Fragment implements LocationListener {
 
     private void getSharedPreferenceData() {
         state[0].setText(preferences.getString(getString(R.string.pref_case_data_state_name), "State"));
-        state[1].setText("Total Cases " + preferences.getString(getString(R.string.pref_case_data_state_total_cases), "Total Cases"));
-        state[2].setText("Recovered " + preferences.getString(getString(R.string.pref_case_data_state_recovered), "Recovered"));
-        state[3].setText("Dead " + preferences.getString(getString(R.string.pref_case_data_state_dead), "Dead"));
+        state[1].setText(preferences.getString(getString(R.string.pref_case_data_state_total_cases), "Total Cases"));
+        state[2].setText(preferences.getString(getString(R.string.pref_case_data_state_recovered), "Recovered"));
+        state[3].setText(preferences.getString(getString(R.string.pref_case_data_state_dead), "Dead"));
+        state[4].setText(preferences.getString(getString(R.string.pref_case_data_state_active), "Dead"));
 
         country[0].setText(preferences.getString(getString(R.string.pref_case_data_country_name), "Country"));
-        country[1].setText("Total Cases " + preferences.getString(getString(R.string.pref_case_data_country_total_cases), "Total Cases"));
-        country[2].setText("Recovered " + preferences.getString(getString(R.string.pref_case_data_country_recovered), "Recovered"));
-        country[3].setText("Dead " + preferences.getString(getString(R.string.pref_case_data_country_dead), "Dead"));
+        country[1].setText(preferences.getString(getString(R.string.pref_case_data_country_total_cases), "Total Cases"));
+        country[2].setText(preferences.getString(getString(R.string.pref_case_data_country_recovered), "Recovered"));
+        country[3].setText(preferences.getString(getString(R.string.pref_case_data_country_dead), "Dead"));
+        country[4].setText(preferences.getString(getString(R.string.pref_case_data_country_active), "Dead"));
+
     }
 
-    private void setData(String countryName, String stateName) {
+
+    private void setData(final String countryName, final String stateName) {
         state[0].setText(stateName);
         country[0].setText(countryName);
 
-        String stateTotalCases = "", stateRecovered = "", stateDead = "", countryTotalCases = "", countryRecovered = "", countryDead = "";
+        final String[] stateValues = new String[4];
+        final String[] countryValues = new String[4];
 
-        state[1].setText("Total Cases " + stateTotalCases);
-        state[2].setText("Recovered " + stateRecovered);
-        state[3].setText("Dead " + stateDead);
+        RequestQueue queue = Volley.newRequestQueue(context);
 
-        country[1].setText("Total Cases " + countryTotalCases);
-        country[2].setText("Recovered " + countryRecovered);
-        country[3].setText("Dead " + countryDead);
+        String url = getString(R.string.url_india_all_states);
 
-        preferences.edit().putString(getString(R.string.pref_case_data_state_name), stateName)
-                .putString(getString(R.string.pref_case_data_state_total_cases), stateTotalCases)
-                .putString(getString(R.string.pref_case_data_state_recovered), stateRecovered)
-                .putString(getString(R.string.pref_case_data_state_dead), stateDead)
-                .putString(getString(R.string.pref_case_data_country_name), countryName)
-                .putString(getString(R.string.pref_case_data_country_total_cases), countryTotalCases)
-                .putString(getString(R.string.pref_case_data_country_recovered), countryRecovered)
-                .putString(getString(R.string.pref_case_data_country_dead), countryDead)
-                .apply();
+        JsonObjectRequest countryStatsRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.getBoolean("success")) {
+                                JSONObject countryData = response.getJSONObject("data").getJSONObject("summary");
+                                JSONArray allStatesData = response.getJSONObject("data").getJSONArray("regional");
+                                JSONObject stateData = null;
+                                for (int i = 0; i < allStatesData.length(); i++) {
+                                    if (allStatesData.getJSONObject(i).getString("loc").equals(stateName)) {
+                                        stateData = allStatesData.getJSONObject(i);
+                                    }
+                                }
+                                if (stateData == null) {
+                                    throw new JSONException("State " + stateName + " not found.");
+                                }
+                                countryValues[0] = "" + countryData.getInt("total");
+                                countryValues[1] = "" + countryData.getInt("discharged");
+                                countryValues[2] = "" + countryData.getInt("deaths");
+                                countryValues[3] = "" + (Integer.parseInt(countryValues[0]) - Integer.parseInt(countryValues[1]) - Integer.parseInt(countryValues[2]));
+
+                                stateValues[0] = "" + stateData.getInt("totalConfirmed");
+                                stateValues[1] = "" + stateData.getInt("discharged");
+                                stateValues[2] = "" + stateData.getInt("deaths");
+                                stateValues[3] = "" + (Integer.parseInt(stateValues[0]) - Integer.parseInt(stateValues[1]) - Integer.parseInt(stateValues[2]));
+
+                                country[1].setText(countryValues[0]);
+                                country[2].setText(countryValues[1]);
+                                country[3].setText(countryValues[2]);
+                                country[4].setText(countryValues[3]);
+
+                                state[1].setText(stateValues[0]);
+                                state[2].setText(stateValues[1]);
+                                state[3].setText(stateValues[2]);
+                                state[4].setText(stateValues[3]);
+
+                                preferences.edit().putString(getString(R.string.pref_case_data_state_name), stateName)
+                                        .putString(getString(R.string.pref_case_data_state_total_cases), stateValues[0])
+                                        .putString(getString(R.string.pref_case_data_state_recovered), stateValues[1])
+                                        .putString(getString(R.string.pref_case_data_state_dead), stateValues[2])
+                                        .putString(getString(R.string.pref_case_data_state_active), stateValues[3])
+                                        .putString(getString(R.string.pref_case_data_country_name), countryName)
+                                        .putString(getString(R.string.pref_case_data_country_total_cases), countryValues[0])
+                                        .putString(getString(R.string.pref_case_data_country_recovered), countryValues[1])
+                                        .putString(getString(R.string.pref_case_data_country_dead), countryValues[2])
+                                        .putString(getString(R.string.pref_case_data_country_active), countryValues[3])
+                                        .apply();
+
+                            }
+                        } catch (JSONException e) {
+                            Log.d("log", "Error: " + e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("log", "ERROR in making request: " + error.toString());
+                    }
+                });
+        queue.add(countryStatsRequest);
     }
 
     @Override
