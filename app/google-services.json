@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "61806007240",
+    "firebase_url": "https://sangarodhak.firebaseio.com",
+    "project_id": "sangarodhak",
+    "storage_bucket": "sangarodhak.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:61806007240:android:492564da1a98bc9b2526fd",
+        "android_client_info": {
+          "package_name": "com.hashbash.sangarodhak"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "61806007240-sjv5cmvaqnpdkn2sco4d0n8kdbl8h0o5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hashbash.sangarodhak",
+            "certificate_hash": "3e74d27401496065c48c1cdea57c3f4e2592b675"
+          }
+        },
+        {
+          "client_id": "61806007240-7qd140vtkc5ipu5of79f72pi6jo6naog.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIr61R62pUohQoVsQs2xJuDAB-ORhOOMk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "61806007240-7qd140vtkc5ipu5of79f72pi6jo6naog.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
