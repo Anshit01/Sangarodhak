@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_notice"
+            android:icon="@drawable/ic_notifications"
+            android:title="Notice" />
+
+        <item
+            android:id="@+id/nav_time_pass"
+            android:icon="@drawable/ic_timepass"
+            android:title="Timepass" />
+
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="Home" />
+
+        <item
+            android:id="@+id/nav_supplies"
+            android:title="Supplies" />
+
+        <item
+            android:id="@+id/nav_donate"
+            android:icon="@drawable/ic_donate"
+            android:title="Donate" />
+
+    </group>
+
+</menu>
