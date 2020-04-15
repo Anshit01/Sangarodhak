@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">Sangarodhak</string>
+    
+    
+    <string name="url_world_stats">https://api.covid19api.com/summary</string>
+    <string name="url_india_stats_mini">https://api.covid19api.com/live/country/india</string>
+    <string name="url_india_all_states">https://api.rootnet.in/covid19-in/stats/latest</string>
+    <string name="url_all_districts">https://api.covid19india.org/state_district_wise.json</string>
+    
 
     <string name="pref_data">PREF_DATA</string>
     

@@ -58,19 +58,29 @@
                 android:id="@+id/state_total_cases"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Cases"/>
+                android:text="Total Cases"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/state_recovered"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Recovered"/>
+                android:text="Recovered"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/state_dead"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dead"/>
+                android:text="Deaths"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/state_active"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Active"
+                android:textSize="16sp" />
 
 
         </LinearLayout>
@@ -100,19 +110,29 @@
                 android:id="@+id/country_total_cases"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Cases"/>
+                android:text="Total Cases"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/country_recovered"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Recovered"/>
+                android:text="Recovered"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/country_dead"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dead"/>
+                android:text="Deaths"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/country_active"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Active"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
