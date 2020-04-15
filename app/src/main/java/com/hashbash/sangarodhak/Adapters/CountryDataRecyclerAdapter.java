@@ -33,14 +33,16 @@ public class CountryDataRecyclerAdapter extends RecyclerView.Adapter<CountryData
     @Override
     public AnnouncementViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        ExpandableLayout expandableLayout = new ExpandableLayout(context);
-        expandableLayout.setParentLayoutResource(R.layout.item_stats_expandable_country_parent);
-        expandableLayout.setSecondLayoutResource(R.layout.item_stats_expandable_child);
-        expandableLayout.setShowSpinner(true);
-        expandableLayout.setSpinnerAnimate(true);
-        expandableLayout.setSpinnerMargin(12f);
-        expandableLayout.setSpinnerRotation(90);
-        expandableLayout.setDuration(200);
+        ExpandableLayout expandableLayout = new ExpandableLayout.Builder(context)
+                .setParentLayoutResource(R.layout.item_stats_expandable_country_parent)
+                .setSecondLayoutResource(R.layout.item_stats_expandable_child)
+                .setShowSpinner(true)
+                .setSpinnerAnimate(true)
+                .setSpinnerMargin(12f)
+                .setSpinnerRotation(90)
+                .setDuration(200)
+                .build();
+
 
         return new AnnouncementViewHolder(expandableLayout);
     }
@@ -51,8 +53,8 @@ public class CountryDataRecyclerAdapter extends RecyclerView.Adapter<CountryData
         holder.countryNameText.setText(countryNames.get(position));
 
         holder.totalCasesText.setText(totalCases.get(position));
-        holder.totalActiveText.setText(totalRecovered.get(position));
-        holder.totalRecoveredText.setText(totalActive.get(position));
+        holder.totalActiveText.setText(totalActive.get(position));
+        holder.totalRecoveredText.setText(totalRecovered.get(position));
         holder.totalDeathText.setText(totalDeath.get(position));
     }
 
