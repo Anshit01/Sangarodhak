@@ -4,6 +4,7 @@
 
     <!--Saved Data in Shared Preferences-->
     <string name="pref_case_data">team.hashbash.sangarodhak.case_data</string>
+    <string name="pref_user_data">team.hashbash.sangarodhak.user_data</string>
 
     <!--State Data in Shared Preferences-->
     <string name="pref_case_data_state_name">PREF_STATE_NAME</string>
@@ -18,12 +19,13 @@
     <string name="pref_case_data_country_recovered">PREF_COUNTRY_RECOVERED</string>
     <string name="pref_case_data_country_dead">PREF_COUNTRY_DEAD</string>
     <string name="pref_case_data_country_active">PREF_COUNTRY_ACTIVE</string>
-    
+
     <string name="url_world_stats">https://api.covid19api.com/summary</string>
     <string name="url_india_stats_mini">https://api.covid19api.com/live/country/india</string>
     <string name="url_india_all_states">https://api.rootnet.in/covid19-in/stats/latest</string>
     <string name="url_all_districts">https://api.covid19india.org/state_district_wise.json</string>
 
     <string name="pref_district_confirmed">PREF_DISTRICT_CONFIRMED</string>
+
 
 </resources>

@@ -2,6 +2,7 @@ package com.hashbash.sangarodhak.Fragments;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +31,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.hashbash.sangarodhak.R;
+import com.hashbash.sangarodhak.StatsIndiaActivity;
+import com.hashbash.sangarodhak.StatsStateActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,6 +51,9 @@ public class FragmentHome extends Fragment implements LocationListener {
     private TextView state[] = new TextView[5];
     private TextView country[] = new TextView[5];
 
+    private LinearLayout countryStatsLinearLayout;
+    private LinearLayout stateStatsLinearLayout;
+
     private Context context;
 
     private LocationManager manager;
@@ -61,7 +68,7 @@ public class FragmentHome extends Fragment implements LocationListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        final View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         preferences = context.getSharedPreferences(getString(R.string.pref_case_data), Context.MODE_PRIVATE);
 
@@ -76,6 +83,25 @@ public class FragmentHome extends Fragment implements LocationListener {
         country[2] = view.findViewById(R.id.country_recovered);
         country[3] = view.findViewById(R.id.country_dead);
         country[4] = view.findViewById(R.id.country_active);
+
+        countryStatsLinearLayout = view.findViewById(R.id.country_stats_layout);
+        stateStatsLinearLayout = view.findViewById(R.id.state_stats_layout);
+
+        countryStatsLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, StatsIndiaActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        stateStatsLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, StatsStateActivity.class);
+                startActivity(intent);
+            }
+        });
 
         getSharedPreferenceData();
 
