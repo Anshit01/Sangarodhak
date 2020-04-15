@@ -6,6 +6,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -78,72 +79,71 @@ public class DashBoardActivity extends AppCompatActivity {
 //            bottomNavigationView.setSelectedItemId(R.id.nav_announcements);
 //        } else {
 //            viewPage.setCurrentItem(2);
-//            bottomNavigationView.setSelectedItemId(R.id.nav_home);
+            bottomNavigationView.setSelectedItemId(R.id.nav_home);
 //        }
 
+        viewPage.setOffscreenPageLimit(4);
 
-//        viewPage.setOffscreenPageLimit(4);
-//
-//        viewPage.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                int id = R.id.nav_home;
-//                if (position == 0)
-//                    id = R.id.nav_announcements;
-//                else if (position == 1)
-//                    id = R.id.nav_results;
-//                else if (position == 2)
-//                    id = R.id.nav_home;
-//                else if (position == 3)
-//                    id = R.id.nav_attendance;
-//                else if (position == 4)
-//                    id = R.id.nav_profile;
-//
-//                bottomNavigationView.setSelectedItemId(id);
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//
-//            }
-//        });
-//
-//        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//                switch (item.getItemId()) {
-//
-//                    case R.id.nav_announcements:
-//                        viewPage.setCurrentItem(0, false);
-//                        item.setChecked(true);
-//                        break;
-//                    case R.id.nav_results:
-//                        viewPage.setCurrentItem(1, false);
-//                        item.setChecked(true);
-//                        break;
-//                    case R.id.nav_home:
-//                        viewPage.setCurrentItem(2, false);
-//                        item.setChecked(true);
-//                        break;
-//                    case R.id.nav_attendance:
-//                        viewPage.setCurrentItem(3, false);
-//                        item.setChecked(true);
-//                        break;
-//                    case R.id.nav_profile:
-//                        viewPage.setCurrentItem(4, false);
-//                        item.setChecked(true);
-//                        break;
-//
-//
-//                }
-//                return false;
-//            }
-//        });
+        viewPage.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                int id = R.id.nav_home;
+                if (position == 0)
+                    id = R.id.nav_notice;
+                else if (position == 1)
+                    id = R.id.nav_time_pass;
+                else if (position == 2)
+                    id = R.id.nav_home;
+                else if (position == 3)
+                    id = R.id.nav_supplies;
+                else if (position == 4)
+                    id = R.id.nav_donate;
+
+                bottomNavigationView.setSelectedItemId(id);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+
+                    case R.id.nav_notice:
+                        viewPage.setCurrentItem(0, false);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_time_pass:
+                        viewPage.setCurrentItem(1, false);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_home:
+                        viewPage.setCurrentItem(2, false);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_supplies:
+                        viewPage.setCurrentItem(3, false);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_donate:
+                        viewPage.setCurrentItem(4, false);
+                        item.setChecked(true);
+                        break;
+
+
+                }
+                return false;
+            }
+        });
 
     }
 

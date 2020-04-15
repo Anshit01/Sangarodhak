@@ -10,26 +10,23 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.hashbash.sangarodhak.R;
 
@@ -47,14 +44,15 @@ public class FragmentHome extends Fragment implements LocationListener {
 
 
     private SharedPreferences sharedPreferences;
-    TextView state[] = new TextView[5];
-    TextView country[] = new TextView[5];
+    private TextView state[] = new TextView[5];
+    private TextView country[] = new TextView[5];
 
-    Context context;
+    private Context context;
 
-    LocationManager manager;
-    Geocoder geocoder;
-    List<Address> addresses;
+    private LocationManager manager;
+    private Geocoder geocoder;
+    private List<Address> addresses;
+    private SharedPreferences preferences;
 
     public FragmentHome(Context context) {
         this.context = context;
@@ -65,7 +63,7 @@ public class FragmentHome extends Fragment implements LocationListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        sharedPreferences = getActivity().getSharedPreferences(getString(R.string.pref_data), Context.MODE_PRIVATE);
+        preferences = context.getSharedPreferences(getString(R.string.pref_case_data), Context.MODE_PRIVATE);
 
         state[0] = view.findViewById(R.id.state_name);
         state[1] = view.findViewById(R.id.state_total_cases);
@@ -79,75 +77,96 @@ public class FragmentHome extends Fragment implements LocationListener {
         country[3] = view.findViewById(R.id.country_dead);
         country[4] = view.findViewById(R.id.country_active);
 
-        updateStatsFromPrefs();
-        updateStats();
+        getSharedPreferenceData();
 
         manager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         geocoder = new Geocoder(context, Locale.getDefault());
 
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, this);
-        }
+        if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3 * 1000, 0, this);
+        } else if (!preferences.getString(getString(R.string.pref_case_data_state_total_cases), "hi").equals("hi"))
+            Toast.makeText(context, "Location not Enabled, Showing last saved data", Toast.LENGTH_SHORT).show();
 
         return view;
     }
 
-    private void updateStats(){
+    private void getSharedPreferenceData() {
+        state[0].setText(preferences.getString(getString(R.string.pref_case_data_state_name), "State"));
+        state[1].setText(preferences.getString(getString(R.string.pref_case_data_state_total_cases), "Total Cases"));
+        state[2].setText(preferences.getString(getString(R.string.pref_case_data_state_recovered), "Recovered"));
+        state[3].setText(preferences.getString(getString(R.string.pref_case_data_state_dead), "Dead"));
+        state[4].setText(preferences.getString(getString(R.string.pref_case_data_state_active), "Dead"));
+
+        country[0].setText(preferences.getString(getString(R.string.pref_case_data_country_name), "Country"));
+        country[1].setText(preferences.getString(getString(R.string.pref_case_data_country_total_cases), "Total Cases"));
+        country[2].setText(preferences.getString(getString(R.string.pref_case_data_country_recovered), "Recovered"));
+        country[3].setText(preferences.getString(getString(R.string.pref_case_data_country_dead), "Dead"));
+        country[4].setText(preferences.getString(getString(R.string.pref_case_data_country_active), "Dead"));
+
+    }
+
+
+    private void setData(final String countryName, final String stateName) {
+        state[0].setText(stateName);
+        country[0].setText(countryName);
+
+        final String[] stateValues = new String[4];
+        final String[] countryValues = new String[4];
+
         RequestQueue queue = Volley.newRequestQueue(context);
+
         String url = getString(R.string.url_india_all_states);
 
         JsonObjectRequest countryStatsRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
                     @Override
-                    public void onResponse(JSONObject response){
+                    public void onResponse(JSONObject response) {
                         try {
-                            if(response.getBoolean("success")) {
-                                String stateName = sharedPreferences.getString(getString(R.string.pref_state), "Himachal Pradesh");
+                            if (response.getBoolean("success")) {
                                 JSONObject countryData = response.getJSONObject("data").getJSONObject("summary");
                                 JSONArray allStatesData = response.getJSONObject("data").getJSONArray("regional");
                                 JSONObject stateData = null;
-                                for(int i = 0; i < allStatesData.length(); i++){
-                                    if(allStatesData.getJSONObject(i).getString("loc").equals(stateName)){
+                                for (int i = 0; i < allStatesData.length(); i++) {
+                                    if (allStatesData.getJSONObject(i).getString("loc").equals(stateName)) {
                                         stateData = allStatesData.getJSONObject(i);
                                     }
                                 }
-                                if(stateData == null){
+                                if (stateData == null) {
                                     throw new JSONException("State " + stateName + " not found.");
                                 }
-                                int countryConfirmed = countryData.getInt("total");
-                                int countryRecovered = countryData.getInt("discharged");
-                                int countryDeaths = countryData.getInt("deaths");
-                                int countryActive = countryConfirmed - countryRecovered - countryDeaths;
+                                countryValues[0] = "" + countryData.getInt("total");
+                                countryValues[1] = "" + countryData.getInt("discharged");
+                                countryValues[2] = "" + countryData.getInt("deaths");
+                                countryValues[3] = "" + (Integer.parseInt(countryValues[0]) - Integer.parseInt(countryValues[1]) - Integer.parseInt(countryValues[2]));
 
-                                int stateConfirmed = stateData.getInt("totalConfirmed");
-                                int stateRecovered = stateData.getInt("discharged");
-                                int stateDeaths = stateData.getInt("deaths");
-                                int stateActive = stateConfirmed - stateRecovered - stateDeaths;
+                                stateValues[0] = "" + stateData.getInt("totalConfirmed");
+                                stateValues[1] = "" + stateData.getInt("discharged");
+                                stateValues[2] = "" + stateData.getInt("deaths");
+                                stateValues[3] = "" + (Integer.parseInt(stateValues[0]) - Integer.parseInt(stateValues[1]) - Integer.parseInt(stateValues[2]));
 
-                                country[1].setText("Confirmed: " + countryConfirmed);
-                                country[2].setText("Recovered: " + countryRecovered);
-                                country[3].setText("Deaths: " + countryDeaths);
-                                country[4].setText("Active: " + countryActive);
+                                country[1].setText(countryValues[0]);
+                                country[2].setText(countryValues[1]);
+                                country[3].setText(countryValues[2]);
+                                country[4].setText(countryValues[3]);
 
-                                state[1].setText("Confirmed: " + stateConfirmed);
-                                state[2].setText("Recovered: " + stateRecovered);
-                                state[3].setText("Deaths: " + stateDeaths);
-                                state[4].setText("Active: " + stateActive);
+                                state[1].setText(stateValues[0]);
+                                state[2].setText(stateValues[1]);
+                                state[3].setText(stateValues[2]);
+                                state[4].setText(stateValues[3]);
 
-                                //TODO: store stats in pref
-
-
-//                                JSONObject countryStats = response.getJSONObject(2);
-//                                SharedPreferences.Editor editor = sharedPreferences.edit();
-//                                editor.putInt(getString(R.string.pref_country_confirmed), countryStats.getInt("Confirmed"));
-//                                editor.putInt(getString(R.string.pref_country_recovered), countryStats.getInt("Recovered"));
-//                                editor.putInt(getString(R.string.pref_country_dead), countryStats.getInt("Deaths"));
-//                                editor.putInt(getString(R.string.pref_country_active), countryStats.getInt("Active"));
-//                                editor.apply();
-//                                country[1].setText("Confirmed: " + countryStats.getInt("Confirmed"));
-//                                country[2].setText("Recovered: " + countryStats.getInt("Recovered"));
-//                                country[3].setText("Deaths: " + countryStats.getInt("Deaths"));
+                                preferences.edit().putString(getString(R.string.pref_case_data_state_name), stateName)
+                                        .putString(getString(R.string.pref_case_data_state_total_cases), stateValues[0])
+                                        .putString(getString(R.string.pref_case_data_state_recovered), stateValues[1])
+                                        .putString(getString(R.string.pref_case_data_state_dead), stateValues[2])
+                                        .putString(getString(R.string.pref_case_data_state_active), stateValues[3])
+                                        .putString(getString(R.string.pref_case_data_country_name), countryName)
+                                        .putString(getString(R.string.pref_case_data_country_total_cases), countryValues[0])
+                                        .putString(getString(R.string.pref_case_data_country_recovered), countryValues[1])
+                                        .putString(getString(R.string.pref_case_data_country_dead), countryValues[2])
+                                        .putString(getString(R.string.pref_case_data_country_active), countryValues[3])
+                                        .apply();
 
                             }
                         } catch (JSONException e) {
@@ -164,24 +183,16 @@ public class FragmentHome extends Fragment implements LocationListener {
         queue.add(countryStatsRequest);
     }
 
-    private void updateStatsFromPrefs(){
-        //TODO
-    }
-
-    private void setData(String countryName, String stateName) {
-        state[0].setText(stateName);
-        sharedPreferences.edit().putString(getString(R.string.pref_state), stateName);
-        country[0].setText(countryName);
-    }
-
     @Override
     public void onLocationChanged(Location location) {
         Log.d("Home", "Location Changed\n" + location);
         try {
             addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            Log.d("Home", "Address Received\n" + addresses);
             setData(addresses.get(0).getCountryName(), addresses.get(0).getAdminArea());
         } catch (IOException e) {
             e.printStackTrace();
+            Log.d("Home", "Address Not Received");
         }
     }
 
