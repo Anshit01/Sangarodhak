@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Sangarodhak</string>
+
+
+    <!--Saved Data in Shared Preferences-->
+    <string name="pref_case_data">team.hashbash.sangarodhak.case_data</string>
+
+    <!--State Data in Shared Preferences-->
+    <string name="pref_case_data_state_name">PREF_STATE_NAME</string>
+    <string name="pref_case_data_state_total_cases">PREF_STATE_TOTAL_CASES</string>
+    <string name="pref_case_data_state_recovered">PREF_STATE_RECOVERED</string>
+    <string name="pref_case_data_state_dead">PREF_STATE_DEAD</string>
+
+    <!--Country Data in Shared Preferences-->
+    <string name="pref_case_data_country_name">PREF_COUNTRY_NAME</string>
+    <string name="pref_case_data_country_total_cases">PREF_COUNTRY_TOTAL_CASES</string>
+    <string name="pref_case_data_country_recovered">PREF_COUNTRY_RECOVERED</string>
+    <string name="pref_case_data_country_dead">PREF_COUNTRY_DEAD</string>
+
 </resources>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_400">
+    android:background="@color/colorAccent">
 
     <com.github.florent37.shapeofview.shapes.RoundRectView
         android:id="@+id/title_container"
@@ -22,9 +22,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:fontFamily="@font/gilroylight"
                 android:gravity="center"
                 android:text="Home"
-                android:fontFamily="@font/gilroylight"
                 android:textColor="@color/black"
                 android:textSize="30sp" />
 
@@ -51,26 +51,30 @@
                 android:id="@+id/state_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="25sp"
-                android:text="State"/>
+                android:text="State"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
 
             <TextView
                 android:id="@+id/state_total_cases"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Cases"/>
+                android:text="Total Cases"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/state_recovered"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Recovered"/>
+                android:text="Recovered"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/state_dead"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dead"/>
+                android:text="Dead"
+                android:textColor="@color/white" />
 
 
         </LinearLayout>
@@ -85,34 +89,38 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center"
             android:layout_weight="1"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/country_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="25sp"
-                android:text="Country"/>
+                android:text="Country"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
 
             <TextView
                 android:id="@+id/country_total_cases"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Cases"/>
+                android:text="Total Cases"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/country_recovered"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Recovered"/>
+                android:text="Recovered"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/country_dead"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dead"/>
+                android:text="Dead"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 
