@@ -61,6 +61,9 @@ public class FragmentHome extends Fragment implements LocationListener {
     private List<Address> addresses;
     private SharedPreferences preferences;
 
+    public FragmentHome() {
+    }
+
     public FragmentHome(Context context) {
         this.context = context;
     }

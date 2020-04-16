@@ -66,12 +66,12 @@ public class CountryDataRecyclerAdapter extends RecyclerView.Adapter<CountryData
             ExpandableLayout itemView = view.findViewById(R.id.expandable_layout);
 
             countryFlag = itemView.parentLayout.findViewById(R.id.country_flag);
-            countryNameText = itemView.parentLayout.findViewById(R.id.country_name);
+            countryNameText = itemView.parentLayout.findViewById(R.id.locale_name);
 
-            totalCasesText = itemView.secondLayout.findViewById(R.id.country_total_cases);
-            totalActiveText = itemView.secondLayout.findViewById(R.id.country_active);
-            totalRecoveredText = itemView.secondLayout.findViewById(R.id.country_recovered);
-            totalDeathText = itemView.secondLayout.findViewById(R.id.country_death);
+            totalCasesText = itemView.secondLayout.findViewById(R.id.locale_total_cases);
+            totalActiveText = itemView.secondLayout.findViewById(R.id.locale_active);
+            totalRecoveredText = itemView.secondLayout.findViewById(R.id.locale_recovered);
+            totalDeathText = itemView.secondLayout.findViewById(R.id.locale_death);
 
         }
     }

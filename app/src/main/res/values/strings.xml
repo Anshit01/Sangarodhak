@@ -10,7 +10,7 @@
     <string name="home_total_cases">Total Cases</string>
     <string name="home_active_cases">Active Cases</string>
     <string name="home_total_recovered">Recovered</string>
-    <string name="home_total_deaths">Dead</string>
+    <string name="home_total_deaths">Death</string>
 
     <!--Saved Data in Shared Preferences-->
     <string name="pref_case_data">team.hashbash.sangarodhak.case_data</string>
