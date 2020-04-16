@@ -42,6 +42,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -67,6 +68,10 @@ public class FragmentHome extends Fragment implements LocationListener {
     private List<Address> addresses;
     private SharedPreferences preferences;
 
+    public FragmentHome() {
+        this.context = getActivity();
+    }
+
     public FragmentHome(Context context) {
         this.context = context;
     }
@@ -76,19 +81,19 @@ public class FragmentHome extends Fragment implements LocationListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        preferences = context.getSharedPreferences(getString(R.string.pref_case_data), Context.MODE_PRIVATE);
+        preferences = context.getSharedPreferences(context.getString(R.string.pref_case_data), Context.MODE_PRIVATE);
 
         state[0] = view.findViewById(R.id.state_name);
         state[1] = view.findViewById(R.id.state_total_cases);
-        state[2] = view.findViewById(R.id.state_recovered);
-        state[3] = view.findViewById(R.id.state_dead);
-        state[4] = view.findViewById(R.id.state_active);
+        state[2] = view.findViewById(R.id.state_active);
+        state[3] = view.findViewById(R.id.state_recovered);
+        state[4] = view.findViewById(R.id.state_dead);
 
         country[0] = view.findViewById(R.id.country_name);
         country[1] = view.findViewById(R.id.country_total_cases);
-        country[2] = view.findViewById(R.id.country_recovered);
-        country[3] = view.findViewById(R.id.country_dead);
-        country[4] = view.findViewById(R.id.country_active);
+        country[2] = view.findViewById(R.id.country_active);
+        country[3] = view.findViewById(R.id.country_recovered);
+        country[4] = view.findViewById(R.id.country_dead);
 
         globalConfirmedTextView = view.findViewById(R.id.global_confirmed);
         globalRecoveredTextView = view.findViewById(R.id.global_recovered);
@@ -131,25 +136,25 @@ public class FragmentHome extends Fragment implements LocationListener {
 
         if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3 * 1000, 0, this);
-        } else if (!preferences.getString(getString(R.string.pref_case_data_state_total_cases), "hi").equals("hi"))
+                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 0, this);
+        } else if (!preferences.getString(context.getString(R.string.pref_case_data_state_total_cases), "hi").equals("hi"))
             Toast.makeText(context, "Location not Enabled, Showing last saved data", Toast.LENGTH_SHORT).show();
 
         return view;
     }
 
     private void getSharedPreferenceData() {
-        state[0].setText(preferences.getString(getString(R.string.pref_case_data_state_name), "State"));
-        state[1].setText(preferences.getString(getString(R.string.pref_case_data_state_total_cases), "Total Cases"));
-        state[2].setText(preferences.getString(getString(R.string.pref_case_data_state_recovered), "Recovered"));
-        state[3].setText(preferences.getString(getString(R.string.pref_case_data_state_dead), "Dead"));
-        state[4].setText(preferences.getString(getString(R.string.pref_case_data_state_active), "Dead"));
+        state[0].setText(preferences.getString(context.getString(R.string.pref_case_data_state_name), "State"));
+        state[1].setText(preferences.getString(context.getString(R.string.pref_case_data_state_total_cases), "0"));
+        state[2].setText(preferences.getString(context.getString(R.string.pref_case_data_state_active), "0"));
+        state[3].setText(preferences.getString(context.getString(R.string.pref_case_data_state_recovered), "0"));
+        state[4].setText(preferences.getString(context.getString(R.string.pref_case_data_state_dead), "0"));
 
-        country[0].setText(preferences.getString(getString(R.string.pref_case_data_country_name), "Country"));
-        country[1].setText(preferences.getString(getString(R.string.pref_case_data_country_total_cases), "Total Cases"));
-        country[2].setText(preferences.getString(getString(R.string.pref_case_data_country_recovered), "Recovered"));
-        country[3].setText(preferences.getString(getString(R.string.pref_case_data_country_dead), "Dead"));
-        country[4].setText(preferences.getString(getString(R.string.pref_case_data_country_active), "Dead"));
+        country[0].setText(preferences.getString(context.getString(R.string.pref_case_data_country_name), "Country"));
+        country[1].setText(preferences.getString(context.getString(R.string.pref_case_data_country_total_cases), "0"));
+        country[2].setText(preferences.getString(context.getString(R.string.pref_case_data_country_active), "0"));
+        country[3].setText(preferences.getString(context.getString(R.string.pref_case_data_country_recovered), "0"));
+        country[4].setText(preferences.getString(context.getString(R.string.pref_case_data_country_dead), "0"));
 
         globalConfirmedTextView.setText(preferences.getInt(getString(R.string.pref_case_data_global_confirmed), 1000000) + "");
         globalRecoveredTextView.setText(preferences.getInt(getString(R.string.pref_case_data_global_recovered), 100000) + "");
@@ -188,14 +193,14 @@ public class FragmentHome extends Fragment implements LocationListener {
                                     throw new JSONException("State " + stateName + " not found.");
                                 }
                                 countryValues[0] = "" + countryData.getInt("total");
-                                countryValues[1] = "" + countryData.getInt("discharged");
-                                countryValues[2] = "" + countryData.getInt("deaths");
-                                countryValues[3] = "" + (Integer.parseInt(countryValues[0]) - Integer.parseInt(countryValues[1]) - Integer.parseInt(countryValues[2]));
+                                countryValues[2] = "" + countryData.getInt("discharged");
+                                countryValues[3] = "" + countryData.getInt("deaths");
+                                countryValues[1] = "" + (Integer.parseInt(countryValues[0]) - Integer.parseInt(countryValues[2]) - Integer.parseInt(countryValues[3]));
 
                                 stateValues[0] = "" + stateData.getInt("totalConfirmed");
-                                stateValues[1] = "" + stateData.getInt("discharged");
-                                stateValues[2] = "" + stateData.getInt("deaths");
-                                stateValues[3] = "" + (Integer.parseInt(stateValues[0]) - Integer.parseInt(stateValues[1]) - Integer.parseInt(stateValues[2]));
+                                stateValues[2] = "" + stateData.getInt("discharged");
+                                stateValues[3] = "" + stateData.getInt("deaths");
+                                stateValues[1] = "" + (Integer.parseInt(stateValues[0]) - Integer.parseInt(stateValues[2]) - Integer.parseInt(stateValues[3]));
 
                                 country[1].setText(countryValues[0]);
                                 country[2].setText(countryValues[1]);
@@ -207,16 +212,16 @@ public class FragmentHome extends Fragment implements LocationListener {
                                 state[3].setText(stateValues[2]);
                                 state[4].setText(stateValues[3]);
 
-                                preferences.edit().putString(getString(R.string.pref_case_data_state_name), stateName)
-                                        .putString(getString(R.string.pref_case_data_state_total_cases), stateValues[0])
-                                        .putString(getString(R.string.pref_case_data_state_recovered), stateValues[1])
-                                        .putString(getString(R.string.pref_case_data_state_dead), stateValues[2])
-                                        .putString(getString(R.string.pref_case_data_state_active), stateValues[3])
-                                        .putString(getString(R.string.pref_case_data_country_name), countryName)
-                                        .putString(getString(R.string.pref_case_data_country_total_cases), countryValues[0])
-                                        .putString(getString(R.string.pref_case_data_country_recovered), countryValues[1])
-                                        .putString(getString(R.string.pref_case_data_country_dead), countryValues[2])
-                                        .putString(getString(R.string.pref_case_data_country_active), countryValues[3])
+                                preferences.edit().putString(context.getString(R.string.pref_case_data_state_name), stateName)
+                                        .putString(context.getString(R.string.pref_case_data_state_total_cases), stateValues[0])
+                                        .putString(context.getString(R.string.pref_case_data_state_active), stateValues[2])
+                                        .putString(context.getString(R.string.pref_case_data_state_recovered), stateValues[2])
+                                        .putString(context.getString(R.string.pref_case_data_state_dead), stateValues[3])
+                                        .putString(context.getString(R.string.pref_case_data_country_name), countryName)
+                                        .putString(context.getString(R.string.pref_case_data_country_total_cases), countryValues[0])
+                                        .putString(context.getString(R.string.pref_case_data_country_active), countryValues[1])
+                                        .putString(context.getString(R.string.pref_case_data_country_recovered), countryValues[2])
+                                        .putString(context.getString(R.string.pref_case_data_country_dead), countryValues[3])
                                         .apply();
 
                             }
