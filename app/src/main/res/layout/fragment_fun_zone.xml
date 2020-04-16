@@ -52,7 +52,7 @@
                 android:layout_margin="10dp"
                 android:fontFamily="@font/gilroylight"
                 android:gravity="center"
-                android:text="Time Pass"
+                android:text="Fun Zone"
                 android:textColor="@color/black"
                 android:textSize="30sp" />
 
