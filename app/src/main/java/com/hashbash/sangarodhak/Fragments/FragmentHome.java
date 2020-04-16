@@ -73,7 +73,7 @@ public class FragmentHome extends Fragment implements LocationListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        preferences = context.getSharedPreferences(getString(R.string.pref_case_data), Context.MODE_PRIVATE);
+        preferences = context.getSharedPreferences(context.getString(R.string.pref_case_data), Context.MODE_PRIVATE);
 
         state[0] = view.findViewById(R.id.state_name);
         state[1] = view.findViewById(R.id.state_total_cases);

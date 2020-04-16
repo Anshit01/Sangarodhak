@@ -19,6 +19,7 @@ import java.util.ArrayList;
 public class StateDataRecyclerAdapter extends RecyclerView.Adapter<StateDataRecyclerAdapter.CaseDataViewHolder> {
     private Context context;
     private ArrayList<String> localeNames, totalCases, totalActive, totalRecovered, totalDeath;
+    private ArrayList<Boolean> isExpanded;
 
     public StateDataRecyclerAdapter(Context context, ArrayList<String> countryNames, ArrayList<String> totalCases, ArrayList<String> totalActive, ArrayList<String> totalRecovered, ArrayList<String> totalDeath) {
         this.context = context;
@@ -27,6 +28,9 @@ public class StateDataRecyclerAdapter extends RecyclerView.Adapter<StateDataRecy
         this.totalActive = totalActive;
         this.totalRecovered = totalRecovered;
         this.totalDeath = totalDeath;
+        isExpanded = new ArrayList<>();
+        for (int i = 0; i < localeNames.size(); i++)
+            isExpanded.add(false);
     }
 
     @NonNull
@@ -42,10 +46,20 @@ public class StateDataRecyclerAdapter extends RecyclerView.Adapter<StateDataRecy
     public void onBindViewHolder(@NonNull CaseDataViewHolder holder, int position) {
         holder.localeName.setText(localeNames.get(position));
 
+        holder.
+
         holder.totalCasesText.setText(totalCases.get(position));
         holder.totalActiveText.setText(totalRecovered.get(position));
         holder.totalRecoveredText.setText(totalActive.get(position));
         holder.totalDeathText.setText(totalDeath.get(position));
+        holder.titleTotalCases.setText(totalCases.get(position));
+
+        isExpanded.set(position, !isExpanded.get(position));
+
+        holder.arrowIcon.setRotation(isExpanded.get(position) ? 180 : 0);
+
+        holder.expandableLayout.setVisibility(isExpanded.get(position) ? View.VISIBLE : View.GONE);
+        holder.titleTotalCases.setVisibility(isExpanded.get(position) ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -53,11 +67,10 @@ public class StateDataRecyclerAdapter extends RecyclerView.Adapter<StateDataRecy
         return localeNames.size();
     }
 
-    static class CaseDataViewHolder extends RecyclerView.ViewHolder {
-        TextView localeName, totalCasesText, totalActiveText, totalRecoveredText, totalDeathText;
+    class CaseDataViewHolder extends RecyclerView.ViewHolder {
+        TextView localeName, totalCasesText, totalActiveText, totalRecoveredText, totalDeathText, titleTotalCases;
         LinearLayout expandableLayout;
         ImageView arrowIcon;
-        boolean isExpanded = false;
 
         CaseDataViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -68,6 +81,7 @@ public class StateDataRecyclerAdapter extends RecyclerView.Adapter<StateDataRecy
             totalActiveText = itemView.findViewById(R.id.locale_active);
             totalRecoveredText = itemView.findViewById(R.id.locale_recovered);
             totalDeathText = itemView.findViewById(R.id.locale_death);
+            titleTotalCases = itemView.findViewById(R.id.title_total_cases);
 
             expandableLayout = itemView.findViewById(R.id.expandable_layout);
             arrowIcon = itemView.findViewById(R.id.arrow_icon);
@@ -75,11 +89,17 @@ public class StateDataRecyclerAdapter extends RecyclerView.Adapter<StateDataRecy
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    isExpanded = !isExpanded;
 
-                    arrowIcon.setRotation(isExpanded ? 180 : 0);
+                    int position = getAdapterPosition();
 
-                    expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+                    isExpanded.set(position, !isExpanded.get(position));
+
+                    notifyItemChanged(position);
+
+//                    arrowIcon.setRotation(isExpanded.get(getAdapterPosition()) ? 180 : 0);
+//
+//                    expandableLayout.setVisibility(isExpanded.get(getAdapterPosition()) ? View.VISIBLE : View.GONE);
+//                    titleTotalCases.setVisibility(isExpanded.get(getAdapterPosition()) ? View.GONE : View.VISIBLE);
                 }
             });
 

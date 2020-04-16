@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="5dp"
     android:gravity="center_vertical">
 
@@ -28,9 +28,18 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="@string/home_name_country"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:text="@string/home_name_country" />
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/title_total_cases"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:layout_marginEnd="5dp"
+                android:textStyle="bold|italic"
+                android:text="0" />
 
             <ImageView
                 android:id="@+id/arrow_icon"
@@ -44,11 +53,11 @@
             android:id="@+id/expandable_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            tools:visibility="visible"
-            android:visibility="gone"
             android:layout_marginTop="5dp"
-            android:padding="5dp">
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
