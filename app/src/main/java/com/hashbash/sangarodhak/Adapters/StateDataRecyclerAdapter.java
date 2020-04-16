@@ -43,10 +43,8 @@ public class StateDataRecyclerAdapter extends RecyclerView.Adapter<StateDataRecy
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CaseDataViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final CaseDataViewHolder holder, final int position) {
         holder.localeName.setText(localeNames.get(position));
-
-        holder.
 
         holder.totalCasesText.setText(totalCases.get(position));
         holder.totalActiveText.setText(totalRecovered.get(position));
@@ -56,10 +54,16 @@ public class StateDataRecyclerAdapter extends RecyclerView.Adapter<StateDataRecy
 
         isExpanded.set(position, !isExpanded.get(position));
 
-        holder.arrowIcon.setRotation(isExpanded.get(position) ? 180 : 0);
+        holder.titleContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isExpanded.set(position, !isExpanded.get(position));
 
-        holder.expandableLayout.setVisibility(isExpanded.get(position) ? View.VISIBLE : View.GONE);
-        holder.titleTotalCases.setVisibility(isExpanded.get(position) ? View.GONE : View.VISIBLE);
+                holder.arrowIcon.setRotation(isExpanded.get(position) ? 180 : 0);
+                holder.expandableLayout.setVisibility(isExpanded.get(position) ? View.VISIBLE : View.GONE);
+                holder.titleTotalCases.setVisibility(isExpanded.get(position) ? View.GONE : View.VISIBLE);
+            }
+        });
     }
 
     @Override
@@ -69,7 +73,7 @@ public class StateDataRecyclerAdapter extends RecyclerView.Adapter<StateDataRecy
 
     class CaseDataViewHolder extends RecyclerView.ViewHolder {
         TextView localeName, totalCasesText, totalActiveText, totalRecoveredText, totalDeathText, titleTotalCases;
-        LinearLayout expandableLayout;
+        LinearLayout expandableLayout, titleContainer;
         ImageView arrowIcon;
 
         CaseDataViewHolder(@NonNull View itemView) {
@@ -83,25 +87,26 @@ public class StateDataRecyclerAdapter extends RecyclerView.Adapter<StateDataRecy
             totalDeathText = itemView.findViewById(R.id.locale_death);
             titleTotalCases = itemView.findViewById(R.id.title_total_cases);
 
+            titleContainer = itemView.findViewById(R.id.title_container);
             expandableLayout = itemView.findViewById(R.id.expandable_layout);
             arrowIcon = itemView.findViewById(R.id.arrow_icon);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    int position = getAdapterPosition();
-
-                    isExpanded.set(position, !isExpanded.get(position));
-
-                    notifyItemChanged(position);
-
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//                    int position = getAdapterPosition();
+//
+//                    isExpanded.set(position, !isExpanded.get(position));
+//
+//                    notifyItemChanged(position);
+//
 //                    arrowIcon.setRotation(isExpanded.get(getAdapterPosition()) ? 180 : 0);
 //
 //                    expandableLayout.setVisibility(isExpanded.get(getAdapterPosition()) ? View.VISIBLE : View.GONE);
 //                    titleTotalCases.setVisibility(isExpanded.get(getAdapterPosition()) ? View.GONE : View.VISIBLE);
-                }
-            });
+//                }
+//            });
 
         }
     }

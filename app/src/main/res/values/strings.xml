@@ -30,6 +30,11 @@
     <string name="pref_case_data_country_dead">PREF_COUNTRY_DEAD</string>
     <string name="pref_case_data_country_active">PREF_COUNTRY_ACTIVE</string>
 
+    <!--Global Data in Shared Preferences-->
+    <string name="pref_case_data_global_confirmed">PREF_GLOBAL_CONFIRMED</string>
+    <string name="pref_case_data_global_recovered">PREF_GLOBAL_RECOVERED</string>
+    <string name="pref_case_data_global_deaths">PREF_GLOBAL_DEATHS</string>
+
     <string name="url_world_stats">https://api.covid19api.com/summary</string>
     <string name="url_india_stats_mini">https://api.covid19api.com/live/country/india</string>
     <string name="url_india_all_states">https://api.rootnet.in/covid19-in/stats/latest</string>
