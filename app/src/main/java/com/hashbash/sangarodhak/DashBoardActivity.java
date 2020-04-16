@@ -182,5 +182,18 @@ public class DashBoardActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        final ArrayList<Fragment> fragments = new ArrayList<>();
+        fragments.add(new FragmentNotice());
+        fragments.add(new FragmentLocationHistory());
+        fragments.add(new FragmentHome(this));
+        fragments.add(new FragmentSupplies());
+        fragments.add(new FragmentProfile());
+
+        adapter = new SlidePageAdapter(getSupportFragmentManager(), fragments);
+    }
 }
 

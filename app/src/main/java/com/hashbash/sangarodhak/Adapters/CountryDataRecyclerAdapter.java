@@ -11,89 +11,93 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
+import com.hashbash.sangarodhak.Modals.CountryCaseDataModal;
 import com.hashbash.sangarodhak.R;
-import com.skydoves.expandablelayout.ExpandableLayout;
 
 import java.util.ArrayList;
 
 
-public class CountryDataRecyclerAdapter extends RecyclerView.Adapter<CountryDataRecyclerAdapter.AnnouncementViewHolder> {
-    private Context context;
-    private ArrayList<String> countryCodes, countryNames, totalCases, totalActive, totalRecovered, totalDeath;
-    private ArrayList<Boolean> isExpanded;
+public class CountryDataRecyclerAdapter extends RecyclerView.Adapter<CountryDataRecyclerAdapter.CaseDataViewHolder> {
 
-    public CountryDataRecyclerAdapter(Context context, ArrayList<String> countryCodes, ArrayList<String> countryNames, ArrayList<String> totalCases, ArrayList<String> totalActive, ArrayList<String> totalRecovered, ArrayList<String> totalDeath) {
+    private Context context;
+    private ArrayList<CountryCaseDataModal> allstates;
+
+    public CountryDataRecyclerAdapter(Context context, ArrayList<CountryCaseDataModal> allstates) {
         this.context = context;
-        this.countryCodes = countryCodes;
-        this.countryNames = countryNames;
-        this.totalCases = totalCases;
-        this.totalActive = totalActive;
-        this.totalRecovered = totalRecovered;
-        this.totalDeath = totalDeath;
-        isExpanded = new ArrayList<>();
-        for (int i = 0; i < countryCodes.size(); i++)
-            isExpanded.add(false);
+        this.allstates = allstates;
     }
 
     @NonNull
     @Override
-    public AnnouncementViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CaseDataViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(context).inflate(R.layout.item_stats_country_expandable_view, parent, false);
 
-        return new AnnouncementViewHolder(view);
+        return new CaseDataViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final AnnouncementViewHolder holder, final int position) {
-        Glide.with(context).load("https://www.countryflags.io/" + countryCodes.get(position) + "/shiny/64.png").into(holder.countryFlag);
-        holder.countryNameText.setText(countryNames.get(position));
+    public void onBindViewHolder(@NonNull final CaseDataViewHolder holder, final int position) {
 
-        holder.totalCasesText.setText(totalCases.get(position));
-        holder.totalActiveText.setText(totalActive.get(position));
-        holder.totalRecoveredText.setText(totalRecovered.get(position));
-        holder.totalDeathText.setText(totalDeath.get(position));
-        holder.titleTotalCases.setText(totalCases.get(position));
+        CountryCaseDataModal thisState = allstates.get(position);
 
-        holder.titleContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isExpanded.set(position, !isExpanded.get(position));
+        holder.localeName.setText(thisState.getStateName());
 
-                holder.arrowIcon.setRotation(isExpanded.get(position) ? 180 : 0);
-                holder.expandableLayout.setVisibility(isExpanded.get(position) ? View.VISIBLE : View.GONE);
-                holder.titleTotalCases.setVisibility(isExpanded.get(position) ? View.GONE : View.VISIBLE);
-            }
-        });
+        holder.totalCasesText.setText(thisState.getTotalCases());
+        holder.totalActiveText.setText(thisState.getTotalActiveCases());
+        holder.totalRecoveredText.setText(thisState.getTotalRecovered());
+        holder.totalDeathText.setText(thisState.getTotalDeaths());
+        holder.titleTotalCases.setText(thisState.getTotalCases());
+
+        holder.arrowIcon.setRotation(thisState.isExpanded() ? 180 : 0);
+        holder.expandableLayout.setVisibility(thisState.isExpanded() ? View.VISIBLE : View.GONE);
+        holder.titleTotalCases.setVisibility(thisState.isExpanded() ? View.GONE : View.VISIBLE);
+
     }
 
     @Override
     public int getItemCount() {
-        return countryCodes.size();
+        return allstates.size();
     }
 
-    static class AnnouncementViewHolder extends RecyclerView.ViewHolder {
-        TextView countryNameText, totalCasesText, totalActiveText, totalRecoveredText, totalDeathText, titleTotalCases;
-        ImageView countryFlag, arrowIcon;
-
+    class CaseDataViewHolder extends RecyclerView.ViewHolder {
+        TextView localeName, totalCasesText, totalActiveText, totalRecoveredText, totalDeathText, titleTotalCases;
         LinearLayout expandableLayout, titleContainer;
+        ImageView arrowIcon;
 
-        AnnouncementViewHolder(@NonNull View itemView) {
+        CaseDataViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            countryFlag = itemView.findViewById(R.id.country_flag);
-            countryNameText = itemView.findViewById(R.id.locale_name);
-            titleTotalCases = itemView.findViewById(R.id.title_total_cases);
+            localeName = itemView.findViewById(R.id.locale_name);
 
             totalCasesText = itemView.findViewById(R.id.locale_total_cases);
             totalActiveText = itemView.findViewById(R.id.locale_active);
             totalRecoveredText = itemView.findViewById(R.id.locale_recovered);
             totalDeathText = itemView.findViewById(R.id.locale_death);
+            titleTotalCases = itemView.findViewById(R.id.title_total_cases);
 
             titleContainer = itemView.findViewById(R.id.title_container);
             expandableLayout = itemView.findViewById(R.id.expandable_layout);
             arrowIcon = itemView.findViewById(R.id.arrow_icon);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    int position = getAdapterPosition();
+
+                    CountryCaseDataModal thisState = allstates.get(position);
+
+                    thisState.setExpanded(!thisState.isExpanded());
+
+                    notifyItemChanged(position);
+//
+//                    arrowIcon.setRotation(isExpanded.get(getAdapterPosition()) ? 180 : 0);
+//
+//                    expandableLayout.setVisibility(isExpanded.get(getAdapterPosition()) ? View.VISIBLE : View.GONE);
+//                    titleTotalCases.setVisibility(isExpanded.get(getAdapterPosition()) ? View.GONE : View.VISIBLE);
+                }
+            });
 
         }
     }

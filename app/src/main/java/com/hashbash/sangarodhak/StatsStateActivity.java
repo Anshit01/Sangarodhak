@@ -15,7 +15,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.hashbash.sangarodhak.Adapters.DistrictDataRecyclerAdapter;
+import com.hashbash.sangarodhak.Adapters.StateDataRecyclerAdapter;
+import com.hashbash.sangarodhak.Modals.StateCaseDataModal;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,10 +26,9 @@ import java.util.ArrayList;
 
 public class StatsStateActivity extends AppCompatActivity {
 
-
     private String state;
-    private ArrayList<String> districtsList = new ArrayList<>();
-    private ArrayList<String> confirmedList = new ArrayList<>();
+
+    private ArrayList<StateCaseDataModal> allDistricts = new ArrayList<>();
 
     RecyclerView recyclerView;
 
@@ -65,8 +65,7 @@ public class StatsStateActivity extends AppCompatActivity {
                     assert districts != null;
                     int len = districts.length();
                     for (int i = 0; i < len; i++) {
-                        districtsList.add(districts.getString(i));
-                        confirmedList.add("" + districtsData.getJSONObject(districts.getString(i)).getInt("confirmed"));
+                        allDistricts.add(new StateCaseDataModal(districts.getString(i), "" + districtsData.getJSONObject(districts.getString(i)).getInt("confirmed")));
                     }
                     showStats();
                 } catch (JSONException e) {
@@ -84,9 +83,6 @@ public class StatsStateActivity extends AppCompatActivity {
 
     private void showStats() {
         progressBar.setVisibility(View.GONE);
-        recyclerView.setAdapter(new DistrictDataRecyclerAdapter(this, districtsList, confirmedList));
-        for (int i = 0; i < districtsList.size(); i++) {
-            Log.d("log", districtsList.get(i) + " " + confirmedList.get(i));
-        }
+        recyclerView.setAdapter(new StateDataRecyclerAdapter(this, allDistricts));
     }
 }

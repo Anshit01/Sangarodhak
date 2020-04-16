@@ -15,7 +15,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.hashbash.sangarodhak.Adapters.CountryDataRecyclerAdapter;
+import com.hashbash.sangarodhak.Adapters.GlobalDataRecyclerAdapter;
+import com.hashbash.sangarodhak.Modals.GlobalCaseDataModal;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,13 +26,7 @@ import java.util.ArrayList;
 
 public class StatsWorldActivity extends AppCompatActivity {
 
-
-    ArrayList<String> countryList = new ArrayList<>();
-    ArrayList<String> countryCodeList = new ArrayList<>();
-    ArrayList<String> confirmedCasesList = new ArrayList<>();
-    ArrayList<String> recoveredCasesList = new ArrayList<>();
-    ArrayList<String> deathsList = new ArrayList<>();
-    ArrayList<String> activeCasesList = new ArrayList<>();
+    ArrayList<GlobalCaseDataModal> allCountryData = new ArrayList<>();
 
     RecyclerView recyclerView;
 
@@ -60,14 +55,13 @@ public class StatsWorldActivity extends AppCompatActivity {
                     int len = statesData.length();
                     for (int i = 0; i < len; i++) {
                         JSONObject country = statesData.getJSONObject(i);
-                        countryList.add(country.getString("Country"));
-                        countryCodeList.add(country.getString("CountryCode"));
-                        confirmedCasesList.add("" + country.getInt("TotalConfirmed"));
-                        recoveredCasesList.add("" + country.getInt("TotalRecovered"));
-                        deathsList.add("" + country.getInt("TotalDeaths"));
-                        activeCasesList.add("" + (country.getInt("TotalConfirmed") - country.getInt("TotalRecovered") - country.getInt("TotalDeaths")));
-                        showStats();
+                        allCountryData.add(new GlobalCaseDataModal(country.getString("CountryCode"), country.getString("Country"),
+                                "" + country.getInt("TotalConfirmed"),
+                                "" + (country.getInt("TotalConfirmed") - country.getInt("TotalRecovered") - country.getInt("TotalDeaths")),
+                                "" + country.getInt("TotalRecovered"),
+                                "" + country.getInt("TotalDeaths")));
                     }
+                    showStats();
                 } catch (JSONException e) {
                     Log.d("World Stats", "" + e.getMessage());
                 }
@@ -83,7 +77,7 @@ public class StatsWorldActivity extends AppCompatActivity {
 
     private void showStats() {
         progressBar.setVisibility(View.GONE);
-        recyclerView.setAdapter(new CountryDataRecyclerAdapter(this, countryCodeList, countryList, confirmedCasesList, activeCasesList, recoveredCasesList, deathsList));
+        recyclerView.setAdapter(new GlobalDataRecyclerAdapter(this, allCountryData));
     }
 
 }
