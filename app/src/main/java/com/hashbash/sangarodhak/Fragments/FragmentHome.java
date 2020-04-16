@@ -265,6 +265,42 @@ public class FragmentHome extends Fragment implements LocationListener {
         queue.add(request);
     }
 
+    private void setDistrictData(){
+        final String district = preferences.getString(getString(R.string.pref_case_data_district_name), null);
+        final String state = preferences.getString(getString(R.string.pref_case_data_state_name), null);
+        if(district == null || state == null){
+
+            return;
+        }
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String url = getString(R.string.url_all_districts);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONObject districtsData = response.getJSONObject(state).getJSONObject("districtData");
+                    if(districtsData.has(district)){
+                        int confirmed = districtsData.getJSONObject(district).getInt("confirmed");
+                        preferences.edit().putInt(getString(R.string.pref_case_data_district_confirmed), confirmed);
+                        Log.d("log", "Cases in " + district + ": " + confirmed);
+                        //TODO
+                    }
+                    else{
+                        //TODO
+                        Log.d("log", "No cases in " + district + "!");
+                    }
+                } catch (JSONException e) {
+                    Log.d("log", e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+    }
+
     @Override
     public void onLocationChanged(Location location) {
         Log.d("Home", "Location Changed\n" + location);
@@ -272,6 +308,8 @@ public class FragmentHome extends Fragment implements LocationListener {
             addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             Log.d("Home", "Address Received\n" + addresses);
             setData(addresses.get(0).getCountryName(), addresses.get(0).getAdminArea());
+            preferences.edit().putString(getString(R.string.pref_case_data_district_name), addresses.get(0).getSubAdminArea());
+            setDistrictData();
         } catch (IOException e) {
             e.printStackTrace();
             Log.d("Home", "Address Not Received");
