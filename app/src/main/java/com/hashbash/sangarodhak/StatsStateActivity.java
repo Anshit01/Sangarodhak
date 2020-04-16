@@ -30,7 +30,6 @@ public class StatsStateActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats_state);
-        Log.d("log", "asdfd");
         if(savedInstanceState != null) {
             state = savedInstanceState.getString("state");
         }
