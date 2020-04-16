@@ -33,6 +33,7 @@ import com.android.volley.toolbox.Volley;
 import com.hashbash.sangarodhak.R;
 import com.hashbash.sangarodhak.StatsIndiaActivity;
 import com.hashbash.sangarodhak.StatsStateActivity;
+import com.hashbash.sangarodhak.StatsWorldActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,6 +52,11 @@ public class FragmentHome extends Fragment implements LocationListener {
     private TextView state[] = new TextView[5];
     private TextView country[] = new TextView[5];
 
+    private TextView globalConfirmedTextView;
+    private TextView globalRecoveredTextView;
+    private TextView globalDeathsTextView;
+
+    private LinearLayout globalStatsLinearLayout;
     private LinearLayout countryStatsLinearLayout;
     private LinearLayout stateStatsLinearLayout;
 
@@ -84,8 +90,21 @@ public class FragmentHome extends Fragment implements LocationListener {
         country[3] = view.findViewById(R.id.country_dead);
         country[4] = view.findViewById(R.id.country_active);
 
+        globalConfirmedTextView = view.findViewById(R.id.global_confirmed);
+        globalRecoveredTextView = view.findViewById(R.id.global_recovered);
+        globalDeathsTextView = view.findViewById(R.id.global_deaths);
+
+        globalStatsLinearLayout = view.findViewById(R.id.global_stats_layout);
         countryStatsLinearLayout = view.findViewById(R.id.country_stats_layout);
         stateStatsLinearLayout = view.findViewById(R.id.state_stats_layout);
+
+        globalStatsLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, StatsWorldActivity.class);
+                startActivity(intent);
+            }
+        });
 
         countryStatsLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,6 +123,8 @@ public class FragmentHome extends Fragment implements LocationListener {
         });
 
         getSharedPreferenceData();
+
+        setGlobalData();
 
         manager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         geocoder = new Geocoder(context, Locale.getDefault());
@@ -129,6 +150,10 @@ public class FragmentHome extends Fragment implements LocationListener {
         country[2].setText(preferences.getString(getString(R.string.pref_case_data_country_recovered), "Recovered"));
         country[3].setText(preferences.getString(getString(R.string.pref_case_data_country_dead), "Dead"));
         country[4].setText(preferences.getString(getString(R.string.pref_case_data_country_active), "Dead"));
+
+        globalConfirmedTextView.setText(preferences.getInt(getString(R.string.pref_case_data_global_confirmed), 1000000) + "");
+        globalRecoveredTextView.setText(preferences.getInt(getString(R.string.pref_case_data_global_recovered), 100000) + "");
+        globalDeathsTextView.setText(preferences.getInt(getString(R.string.pref_case_data_global_deaths), 10000) + "");
 
     }
 
@@ -207,6 +232,37 @@ public class FragmentHome extends Fragment implements LocationListener {
                     }
                 });
         queue.add(countryStatsRequest);
+    }
+
+    private void setGlobalData(){
+        String url = getString(R.string.url_world_stats);
+        RequestQueue queue = Volley.newRequestQueue(context);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONObject globalData = response.getJSONObject("Global");
+                    int confirmed = globalData.getInt("TotalConfirmed");
+                    int recovered = globalData.getInt("TotalRecovered");
+                    int deaths = globalData.getInt("TotalDeaths");
+                    globalConfirmedTextView.setText("" + confirmed);
+                    globalRecoveredTextView.setText("" + recovered);
+                    globalDeathsTextView.setText("" + deaths);
+                    preferences.edit().putInt(getString(R.string.pref_case_data_global_confirmed), confirmed)
+                            .putInt(getString(R.string.pref_case_data_global_recovered), recovered)
+                            .putInt(getString(R.string.pref_case_data_global_deaths), deaths)
+                            .apply();
+                } catch (JSONException e) {
+                    Log.d("log", e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("log", error.toString());
+            }
+        });
+        queue.add(request);
     }
 
     @Override
