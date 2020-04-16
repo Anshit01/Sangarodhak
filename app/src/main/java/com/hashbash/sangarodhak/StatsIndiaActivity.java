@@ -15,7 +15,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.hashbash.sangarodhak.Adapters.StateDataRecyclerAdapter;
+import com.hashbash.sangarodhak.Adapters.CountryDataRecyclerAdapter;
+import com.hashbash.sangarodhak.Modals.CountryCaseDataModal;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,11 +26,7 @@ import java.util.ArrayList;
 
 public class StatsIndiaActivity extends AppCompatActivity {
 
-    ArrayList<String> statesList = new ArrayList<>();
-    ArrayList<String> confirmedCasesList = new ArrayList<>();
-    ArrayList<String> recoveredCasesList = new ArrayList<>();
-    ArrayList<String> deathsList = new ArrayList<>();
-    ArrayList<String> activeCasesList = new ArrayList<>();
+    ArrayList<CountryCaseDataModal> allStates = new ArrayList<>();
 
     RecyclerView recyclerView;
     ProgressBar progressBar;
@@ -58,11 +55,11 @@ public class StatsIndiaActivity extends AppCompatActivity {
                     int len = statesData.length();
                     for (int i = 0; i < len; i++) {
                         JSONObject state = statesData.getJSONObject(i);
-                        statesList.add(state.getString("loc"));
-                        confirmedCasesList.add("" + state.getInt("totalConfirmed"));
-                        recoveredCasesList.add("" + state.getInt("discharged"));
-                        deathsList.add("" + state.getInt("deaths"));
-                        activeCasesList.add("" + (state.getInt("totalConfirmed") - state.getInt("discharged") - state.getInt("deaths")));
+                        allStates.add(new CountryCaseDataModal(state.getString("loc"),
+                                "" + state.getInt("totalConfirmed"),
+                                "" + (state.getInt("totalConfirmed") - state.getInt("discharged") - state.getInt("deaths")),
+                                "" + state.getInt("discharged"),
+                                "" + state.getInt("deaths")));
                     }
                     showStats();
                 } catch (JSONException e) {
@@ -80,7 +77,7 @@ public class StatsIndiaActivity extends AppCompatActivity {
 
     private void showStats() {
         progressBar.setVisibility(View.GONE);
-        recyclerView.setAdapter(new StateDataRecyclerAdapter(this, statesList, confirmedCasesList, activeCasesList, recoveredCasesList, deathsList));
+        recyclerView.setAdapter(new CountryDataRecyclerAdapter(this, allStates));
     }
 
 }

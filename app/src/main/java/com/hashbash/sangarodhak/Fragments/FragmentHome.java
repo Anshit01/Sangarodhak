@@ -69,7 +69,7 @@ public class FragmentHome extends Fragment implements LocationListener {
     private SharedPreferences preferences;
 
     public FragmentHome() {
-        this.context = getContext();
+        this.context = getActivity();
     }
 
     public FragmentHome(Context context) {
