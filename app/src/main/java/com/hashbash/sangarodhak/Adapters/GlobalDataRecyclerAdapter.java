@@ -45,7 +45,7 @@ public class GlobalDataRecyclerAdapter extends RecyclerView.Adapter<GlobalDataRe
         Glide.with(context).load("https://www.countryflags.io/" + thisCountry.getCountryCode() + "/shiny/64.png").into(holder.countryFlag);
         holder.countryNameText.setText(thisCountry.getCountryName());
 
-        holder.totalCasesText.setText(thisCountry.getTotalActiveCases());
+        holder.totalCasesText.setText(thisCountry.getTotalCases());
         holder.totalActiveText.setText(thisCountry.getTotalActiveCases());
         holder.totalRecoveredText.setText(thisCountry.getTotalRecovered());
         holder.totalDeathText.setText(thisCountry.getTotalDeaths());
