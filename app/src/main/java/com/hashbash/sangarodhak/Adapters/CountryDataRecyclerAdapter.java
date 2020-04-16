@@ -1,6 +1,8 @@
 package com.hashbash.sangarodhak.Adapters;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,18 +35,9 @@ public class CountryDataRecyclerAdapter extends RecyclerView.Adapter<CountryData
     @Override
     public AnnouncementViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        ExpandableLayout expandableLayout = new ExpandableLayout.Builder(context)
-                .setParentLayoutResource(R.layout.item_stats_expandable_country_parent)
-                .setSecondLayoutResource(R.layout.item_stats_expandable_child)
-                .setShowSpinner(true)
-                .setSpinnerAnimate(true)
-                .setSpinnerMargin(12f)
-                .setSpinnerRotation(90)
-                .setDuration(200)
-                .build();
+        View view = LayoutInflater.from(context).inflate(R.layout.item_stats_country_expandable_view, parent, false);
 
-
-        return new AnnouncementViewHolder(expandableLayout);
+        return new AnnouncementViewHolder(view);
     }
 
     @Override
@@ -67,8 +60,11 @@ public class CountryDataRecyclerAdapter extends RecyclerView.Adapter<CountryData
         TextView countryNameText, totalCasesText, totalActiveText, totalRecoveredText, totalDeathText;
         ImageView countryFlag;
 
-        AnnouncementViewHolder(@NonNull ExpandableLayout itemView) {
-            super(itemView);
+        AnnouncementViewHolder(@NonNull View view) {
+            super(view);
+
+            ExpandableLayout itemView = view.findViewById(R.id.expandable_layout);
+
             countryFlag = itemView.parentLayout.findViewById(R.id.country_flag);
             countryNameText = itemView.parentLayout.findViewById(R.id.country_name);
 

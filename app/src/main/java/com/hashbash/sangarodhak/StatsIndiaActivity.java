@@ -42,6 +42,24 @@ public class StatsIndiaActivity extends AppCompatActivity {
         dead.add("0");
         dead.add("0");
 
+        codes.add("as");
+        codes.add("us");
+
+        name.add("India");
+        name.add("India");
+
+        total.add("34");
+        total.add("23");
+
+        active.add("23");
+        active.add("21");
+
+        recovered.add("2");
+        recovered.add("1");
+
+        dead.add("0");
+        dead.add("0");
+
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
