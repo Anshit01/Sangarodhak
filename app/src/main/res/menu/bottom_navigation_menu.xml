@@ -9,9 +9,9 @@
             android:title="Notice" />
 
         <item
-            android:id="@+id/nav_time_pass"
-            android:icon="@drawable/ic_timepass"
-            android:title="Timepass" />
+            android:id="@+id/nav_fun_zone"
+            android:icon="@drawable/ic_funzone"
+            android:title="Fun Zone" />
 
         <item
             android:id="@+id/nav_home"
@@ -20,6 +20,7 @@
 
         <item
             android:id="@+id/nav_supplies"
+            android:icon="@drawable/ic_supplies"
             android:title="Supplies" />
 
         <item

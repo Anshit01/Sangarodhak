@@ -2,8 +2,6 @@ package com.hashbash.sangarodhak;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
@@ -20,9 +18,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.hashbash.sangarodhak.Adapters.SlidePageAdapter;
 import com.hashbash.sangarodhak.Fragments.FragmentHome;
-import com.hashbash.sangarodhak.Fragments.FragmentLocationHistory;
+import com.hashbash.sangarodhak.Fragments.FragmentDonate;
 import com.hashbash.sangarodhak.Fragments.FragmentNotice;
-import com.hashbash.sangarodhak.Fragments.FragmentProfile;
+import com.hashbash.sangarodhak.Fragments.FragmentFunZone;
 import com.hashbash.sangarodhak.Fragments.FragmentSupplies;
 
 import java.util.ArrayList;
@@ -39,7 +37,6 @@ public class DashBoardActivity extends AppCompatActivity {
 
     boolean openAttendance, openAnnouncement, doubleTap;
 
-
     FragmentHome home;
 
     //ArrayList<Fragment> resultList = new ArrayList<>();
@@ -47,6 +44,7 @@ public class DashBoardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_dash_board);
 
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, GET_LOCATION);
@@ -56,10 +54,10 @@ public class DashBoardActivity extends AppCompatActivity {
 
         final ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new FragmentNotice());
-        fragments.add(new FragmentLocationHistory());
-        fragments.add(new FragmentHome(this));
+        fragments.add(new FragmentFunZone());
+        fragments.add(new FragmentHome());
         fragments.add(new FragmentSupplies());
-        fragments.add(new FragmentProfile());
+        fragments.add(new FragmentDonate());
 
         viewPage = findViewById(R.id.main_fragment_pager);
         bottomNavigationView = findViewById(R.id.bottom_nav);
@@ -69,18 +67,7 @@ public class DashBoardActivity extends AppCompatActivity {
         viewPage.setAdapter(adapter);
 
         viewPage.setCurrentItem(2);
-
-//        if (openAttendance) {
-//            viewPage.setCurrentItem(3);
-//            bottomNavigationView.setSelectedItemId(R.id.nav_attendance);
-//        }
-//        else if (openAnnouncement) {
-//            viewPage.setCurrentItem(0);
-//            bottomNavigationView.setSelectedItemId(R.id.nav_announcements);
-//        } else {
-//            viewPage.setCurrentItem(2);
-            bottomNavigationView.setSelectedItemId(R.id.nav_home);
-//        }
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
 
         viewPage.setOffscreenPageLimit(4);
 
@@ -96,7 +83,7 @@ public class DashBoardActivity extends AppCompatActivity {
                 if (position == 0)
                     id = R.id.nav_notice;
                 else if (position == 1)
-                    id = R.id.nav_time_pass;
+                    id = R.id.nav_fun_zone;
                 else if (position == 2)
                     id = R.id.nav_home;
                 else if (position == 3)
@@ -122,7 +109,7 @@ public class DashBoardActivity extends AppCompatActivity {
                         viewPage.setCurrentItem(0, false);
                         item.setChecked(true);
                         break;
-                    case R.id.nav_time_pass:
+                    case R.id.nav_fun_zone:
                         viewPage.setCurrentItem(1, false);
                         item.setChecked(true);
                         break;
@@ -188,12 +175,12 @@ public class DashBoardActivity extends AppCompatActivity {
         super.onResume();
         final ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new FragmentNotice());
-        fragments.add(new FragmentLocationHistory());
-        fragments.add(new FragmentHome(this));
+        fragments.add(new FragmentDonate());
+        fragments.add(new FragmentHome());
         fragments.add(new FragmentSupplies());
-        fragments.add(new FragmentProfile());
+        fragments.add(new FragmentFunZone());
 
         adapter = new SlidePageAdapter(getSupportFragmentManager(), fragments);
     }
-}
 
+}
