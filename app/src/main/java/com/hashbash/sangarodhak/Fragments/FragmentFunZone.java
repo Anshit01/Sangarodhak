@@ -11,15 +11,14 @@ import androidx.fragment.app.Fragment;
 
 import com.hashbash.sangarodhak.R;
 
-public class FragmentTimePass extends Fragment {
+public class FragmentFunZone extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_time_pass, container, false);
+        View view = inflater.inflate(R.layout.fragment_fun_zone, container, false);
 
         return view;
     }
-
 }

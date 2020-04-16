@@ -20,7 +20,7 @@ import com.hashbash.sangarodhak.Adapters.SlidePageAdapter;
 import com.hashbash.sangarodhak.Fragments.FragmentHome;
 import com.hashbash.sangarodhak.Fragments.FragmentDonate;
 import com.hashbash.sangarodhak.Fragments.FragmentNotice;
-import com.hashbash.sangarodhak.Fragments.FragmentTimePass;
+import com.hashbash.sangarodhak.Fragments.FragmentFunZone;
 import com.hashbash.sangarodhak.Fragments.FragmentSupplies;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class DashBoardActivity extends AppCompatActivity {
 
         final ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new FragmentNotice());
-        fragments.add(new FragmentTimePass());
+        fragments.add(new FragmentFunZone());
         fragments.add(new FragmentHome());
         fragments.add(new FragmentSupplies());
         fragments.add(new FragmentDonate());
@@ -83,7 +83,7 @@ public class DashBoardActivity extends AppCompatActivity {
                 if (position == 0)
                     id = R.id.nav_notice;
                 else if (position == 1)
-                    id = R.id.nav_time_pass;
+                    id = R.id.nav_fun_zone;
                 else if (position == 2)
                     id = R.id.nav_home;
                 else if (position == 3)
@@ -109,7 +109,7 @@ public class DashBoardActivity extends AppCompatActivity {
                         viewPage.setCurrentItem(0, false);
                         item.setChecked(true);
                         break;
-                    case R.id.nav_time_pass:
+                    case R.id.nav_fun_zone:
                         viewPage.setCurrentItem(1, false);
                         item.setChecked(true);
                         break;
@@ -178,7 +178,7 @@ public class DashBoardActivity extends AppCompatActivity {
         fragments.add(new FragmentDonate());
         fragments.add(new FragmentHome());
         fragments.add(new FragmentSupplies());
-        fragments.add(new FragmentTimePass());
+        fragments.add(new FragmentFunZone());
 
         adapter = new SlidePageAdapter(getSupportFragmentManager(), fragments);
     }
