@@ -420,7 +420,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:behavior_peekHeight="auto"
+            android:orientation="vertical"
+            app:layout_behavior="@string/bottom_sheet_behavior"
             android:background="@color/white">
+
 
         </LinearLayout>
 

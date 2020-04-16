@@ -1,8 +1,10 @@
 package com.hashbash.sangarodhak.Fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -30,6 +32,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.hashbash.sangarodhak.R;
 import com.hashbash.sangarodhak.StatsIndiaActivity;
 import com.hashbash.sangarodhak.StatsStateActivity;
@@ -42,12 +54,12 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 import static android.content.Context.LOCATION_SERVICE;
 
 public class FragmentHome extends Fragment implements LocationListener {
 
+    private final int GET_LOCATION = 12;
 
     private SharedPreferences sharedPreferences;
     private TextView state[] = new TextView[5];
@@ -61,19 +73,12 @@ public class FragmentHome extends Fragment implements LocationListener {
     private LinearLayout countryStatsLinearLayout;
     private LinearLayout stateStatsLinearLayout;
 
-    private Context context;
-
     private LocationManager manager;
     private Geocoder geocoder;
     private List<Address> addresses;
     private SharedPreferences preferences;
 
     public FragmentHome() {
-        this.context = getActivity();
-    }
-
-    public FragmentHome(Context context) {
-        this.context = context;
     }
 
     @Nullable
@@ -81,7 +86,7 @@ public class FragmentHome extends Fragment implements LocationListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        preferences = context.getSharedPreferences(context.getString(R.string.pref_case_data), Context.MODE_PRIVATE);
+        preferences = getActivity().getSharedPreferences(getString(R.string.pref_case_data), Context.MODE_PRIVATE);
 
         state[0] = view.findViewById(R.id.state_name);
         state[1] = view.findViewById(R.id.state_total_cases);
@@ -106,7 +111,7 @@ public class FragmentHome extends Fragment implements LocationListener {
         globalStatsLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, StatsWorldActivity.class);
+                Intent intent = new Intent(getContext(), StatsWorldActivity.class);
                 startActivity(intent);
             }
         });
@@ -114,7 +119,7 @@ public class FragmentHome extends Fragment implements LocationListener {
         countryStatsLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, StatsIndiaActivity.class);
+                Intent intent = new Intent(getContext(), StatsIndiaActivity.class);
                 startActivity(intent);
             }
         });
@@ -122,43 +127,45 @@ public class FragmentHome extends Fragment implements LocationListener {
         stateStatsLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, StatsStateActivity.class);
+                Intent intent = new Intent(getContext(), StatsStateActivity.class);
                 startActivity(intent);
             }
         });
 
         getSharedPreferenceData();
-
         setGlobalData();
 
-        manager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-        geocoder = new Geocoder(context, Locale.getDefault());
+        manager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
+        geocoder = new Geocoder(getContext(), Locale.getDefault());
 
-        if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 0, this);
-        } else if (!preferences.getString(context.getString(R.string.pref_case_data_state_total_cases), "hi").equals("hi"))
-            Toast.makeText(context, "Location not Enabled, Showing last saved data", Toast.LENGTH_SHORT).show();
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ) {
+            if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 50, this);
+            } else if (!preferences.getString(getContext().getString(R.string.pref_case_data_state_total_cases), "hi").equals("hi"))
+                askGPSTurnOn();
+        }
+        else
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, GET_LOCATION);
 
         return view;
     }
 
     private void getSharedPreferenceData() {
-        state[0].setText(preferences.getString(context.getString(R.string.pref_case_data_state_name), "State"));
-        state[1].setText(preferences.getString(context.getString(R.string.pref_case_data_state_total_cases), "0"));
-        state[2].setText(preferences.getString(context.getString(R.string.pref_case_data_state_active), "0"));
-        state[3].setText(preferences.getString(context.getString(R.string.pref_case_data_state_recovered), "0"));
-        state[4].setText(preferences.getString(context.getString(R.string.pref_case_data_state_dead), "0"));
+        state[0].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_state_name), "State"));
+        state[1].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_state_total_cases), "0"));
+        state[2].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_state_active), "0"));
+        state[3].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_state_recovered), "0"));
+        state[4].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_state_dead), "0"));
 
-        country[0].setText(preferences.getString(context.getString(R.string.pref_case_data_country_name), "Country"));
-        country[1].setText(preferences.getString(context.getString(R.string.pref_case_data_country_total_cases), "0"));
-        country[2].setText(preferences.getString(context.getString(R.string.pref_case_data_country_active), "0"));
-        country[3].setText(preferences.getString(context.getString(R.string.pref_case_data_country_recovered), "0"));
-        country[4].setText(preferences.getString(context.getString(R.string.pref_case_data_country_dead), "0"));
+        country[0].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_country_name), "Country"));
+        country[1].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_country_total_cases), "0"));
+        country[2].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_country_active), "0"));
+        country[3].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_country_recovered), "0"));
+        country[4].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_country_dead), "0"));
 
-        globalConfirmedTextView.setText(preferences.getInt(getString(R.string.pref_case_data_global_confirmed), 1000000) + "");
-        globalRecoveredTextView.setText(preferences.getInt(getString(R.string.pref_case_data_global_recovered), 100000) + "");
-        globalDeathsTextView.setText(preferences.getInt(getString(R.string.pref_case_data_global_deaths), 10000) + "");
+        globalConfirmedTextView.setText(preferences.getInt(getActivity().getString(R.string.pref_case_data_global_confirmed), 0) + "");
+        globalRecoveredTextView.setText(preferences.getInt(getActivity().getString(R.string.pref_case_data_global_recovered), 0) + "");
+        globalDeathsTextView.setText(preferences.getInt(getActivity().getString(R.string.pref_case_data_global_deaths), 0) + "");
 
     }
 
@@ -170,7 +177,7 @@ public class FragmentHome extends Fragment implements LocationListener {
         final String[] stateValues = new String[4];
         final String[] countryValues = new String[4];
 
-        RequestQueue queue = Volley.newRequestQueue(context);
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
 
         String url = getString(R.string.url_india_all_states);
 
@@ -212,16 +219,16 @@ public class FragmentHome extends Fragment implements LocationListener {
                                 state[3].setText(stateValues[2]);
                                 state[4].setText(stateValues[3]);
 
-                                preferences.edit().putString(context.getString(R.string.pref_case_data_state_name), stateName)
-                                        .putString(context.getString(R.string.pref_case_data_state_total_cases), stateValues[0])
-                                        .putString(context.getString(R.string.pref_case_data_state_active), stateValues[2])
-                                        .putString(context.getString(R.string.pref_case_data_state_recovered), stateValues[2])
-                                        .putString(context.getString(R.string.pref_case_data_state_dead), stateValues[3])
-                                        .putString(context.getString(R.string.pref_case_data_country_name), countryName)
-                                        .putString(context.getString(R.string.pref_case_data_country_total_cases), countryValues[0])
-                                        .putString(context.getString(R.string.pref_case_data_country_active), countryValues[1])
-                                        .putString(context.getString(R.string.pref_case_data_country_recovered), countryValues[2])
-                                        .putString(context.getString(R.string.pref_case_data_country_dead), countryValues[3])
+                                preferences.edit().putString(getContext().getString(R.string.pref_case_data_state_name), stateName)
+                                        .putString(getContext().getString(R.string.pref_case_data_state_total_cases), stateValues[0])
+                                        .putString(getContext().getString(R.string.pref_case_data_state_active), stateValues[2])
+                                        .putString(getContext().getString(R.string.pref_case_data_state_recovered), stateValues[2])
+                                        .putString(getContext().getString(R.string.pref_case_data_state_dead), stateValues[3])
+                                        .putString(getContext().getString(R.string.pref_case_data_country_name), countryName)
+                                        .putString(getContext().getString(R.string.pref_case_data_country_total_cases), countryValues[0])
+                                        .putString(getContext().getString(R.string.pref_case_data_country_active), countryValues[1])
+                                        .putString(getContext().getString(R.string.pref_case_data_country_recovered), countryValues[2])
+                                        .putString(getContext().getString(R.string.pref_case_data_country_dead), countryValues[3])
                                         .apply();
 
                             }
@@ -239,9 +246,9 @@ public class FragmentHome extends Fragment implements LocationListener {
         queue.add(countryStatsRequest);
     }
 
-    private void setGlobalData(){
+    private void setGlobalData() {
         String url = getString(R.string.url_world_stats);
-        RequestQueue queue = Volley.newRequestQueue(context);
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -296,5 +303,73 @@ public class FragmentHome extends Fragment implements LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
         Log.d("Home", provider + " Disabled");
+    }
+
+    private void askGPSTurnOn() {
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+
+        Task<LocationSettingsResponse> result =
+                LocationServices.getSettingsClient(getActivity()).checkLocationSettings(builder.build());
+
+
+        result.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+                try {
+                    LocationSettingsResponse response = task.getResult(ApiException.class);
+                    // All location settings are satisfied. The client can initialize location
+                    // requests here.
+                } catch (ApiException exception) {
+                    switch (exception.getStatusCode()) {
+                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                            // Location settings are not satisfied. But could be fixed by showing the
+                            // user a dialog.
+                            try {
+                                // Cast to a resolvable exception.
+                                ResolvableApiException resolvable = (ResolvableApiException) exception;
+                                // Show the dialog by calling startResolutionForResult(),
+                                // and check the result in onActivityResult().
+                                resolvable.startResolutionForResult(
+                                        getActivity(),
+                                        LocationRequest.PRIORITY_HIGH_ACCURACY);
+                            } catch (IntentSender.SendIntentException e) {
+                                // Ignore the error.
+                            } catch (ClassCastException e) {
+                                // Ignore, should be an impossible error.
+                            }
+                            break;
+                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                            // Location settings are not satisfied. However, we have no way to fix the
+                            // settings so we won't show the dialog.
+                            break;
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LocationRequest.PRIORITY_HIGH_ACCURACY) {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    // All required changes were successfully made
+                    if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+                        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 50, this);
+                    Log.i("DashBoard", "onActivityResult: GPS Enabled by user");
+                    break;
+                case Activity.RESULT_CANCELED:
+                    // The user was asked to change settings, but chose not to
+                    Log.i("DashBoard", "onActivityResult: User rejected GPS request");
+                    Toast.makeText(getActivity(),"Displaying Saved Data", Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
