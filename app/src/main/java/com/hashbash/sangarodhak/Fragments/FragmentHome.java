@@ -221,7 +221,7 @@ public class FragmentHome extends Fragment implements LocationListener {
 
                                 preferences.edit().putString(getContext().getString(R.string.pref_case_data_state_name), stateName)
                                         .putString(getContext().getString(R.string.pref_case_data_state_total_cases), stateValues[0])
-                                        .putString(getContext().getString(R.string.pref_case_data_state_active), stateValues[2])
+                                        .putString(getContext().getString(R.string.pref_case_data_state_active), stateValues[1])
                                         .putString(getContext().getString(R.string.pref_case_data_state_recovered), stateValues[2])
                                         .putString(getContext().getString(R.string.pref_case_data_state_dead), stateValues[3])
                                         .putString(getContext().getString(R.string.pref_case_data_country_name), countryName)
@@ -284,7 +284,7 @@ public class FragmentHome extends Fragment implements LocationListener {
 
             return;
         }
-        RequestQueue queue = Volley.newRequestQueue(context);
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
         String url = getString(R.string.url_all_districts);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
