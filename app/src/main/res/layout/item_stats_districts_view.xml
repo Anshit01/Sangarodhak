@@ -30,7 +30,7 @@
                 android:id="@+id/locale_total_cases"
                 android:layout_width="wrap_content"
                 android:textColor="@color/black"
-                android:layout_marginEnd="5dp"
+                android:paddingEnd="5dp"
                 android:layout_height="wrap_content"
                 android:textStyle="bold|italic"
                 android:text="0" />
