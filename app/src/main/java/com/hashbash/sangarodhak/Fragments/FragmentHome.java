@@ -1,7 +1,6 @@
 package com.hashbash.sangarodhak.Fragments;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,7 +39,6 @@ import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.hashbash.sangarodhak.R;
 import com.hashbash.sangarodhak.StatsIndiaActivity;
 import com.hashbash.sangarodhak.StatsStateActivity;
@@ -137,7 +134,6 @@ public class FragmentHome extends Fragment implements LocationListener {
 
         getSharedPreferenceData();
         setGlobalData();
-        setData();
 
         manager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
         geocoder = new Geocoder(getContext(), Locale.getDefault());
@@ -146,7 +142,7 @@ public class FragmentHome extends Fragment implements LocationListener {
             manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60 * 1000, 50, this);
             if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 50, this);
-            } else if (preferences.getString(getContext().getString(R.string.pref_case_data_state_total_cases), "hi").equals("hi"))
+            } else
                 askGPSTurnOn();
         } else
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, GET_LOCATION);
@@ -155,28 +151,26 @@ public class FragmentHome extends Fragment implements LocationListener {
     }
 
     private void getSharedPreferenceData() {
-        stateName = preferences.getString(getString(R.string.pref_case_data_state_name), "State");
-        countryName = preferences.getString(getString(R.string.pref_case_data_country_name), "Country");
-        state[0].setText(stateName);
+        state[0].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_state_name), "State"));
         state[1].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_state_total_cases), "0"));
         state[2].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_state_active), "0"));
         state[3].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_state_recovered), "0"));
         state[4].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_state_dead), "0"));
 
-        country[0].setText(countryName);
+        country[0].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_country_name), "Country"));
         country[1].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_country_total_cases), "0"));
         country[2].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_country_active), "0"));
         country[3].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_country_recovered), "0"));
         country[4].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_country_dead), "0"));
 
-        globalConfirmedTextView.setText(preferences.getInt(getActivity().getString(R.string.pref_case_data_global_confirmed), 0) + "");
-        globalRecoveredTextView.setText(preferences.getInt(getActivity().getString(R.string.pref_case_data_global_recovered), 0) + "");
-        globalDeathsTextView.setText(preferences.getInt(getActivity().getString(R.string.pref_case_data_global_deaths), 0) + "");
+        globalConfirmedTextView.setText(preferences.getString(getActivity().getString(R.string.pref_case_data_global_confirmed), "0"));
+        globalRecoveredTextView.setText(preferences.getString(getActivity().getString(R.string.pref_case_data_global_recovered), "0"));
+        globalDeathsTextView.setText(preferences.getString(getActivity().getString(R.string.pref_case_data_global_deaths), "0"));
 
     }
 
 
-    private void setData() {
+    private void setData(final String stateName, final String countryName) {
         state[0].setText(stateName);
         country[0].setText(countryName);
 
@@ -261,15 +255,17 @@ public class FragmentHome extends Fragment implements LocationListener {
             public void onResponse(JSONObject response) {
                 try {
                     JSONObject globalData = response.getJSONObject("Global");
-                    int confirmed = globalData.getInt("TotalConfirmed");
-                    int recovered = globalData.getInt("TotalRecovered");
-                    int deaths = globalData.getInt("TotalDeaths");
-                    globalConfirmedTextView.setText("" + confirmed);
-                    globalRecoveredTextView.setText("" + recovered);
-                    globalDeathsTextView.setText("" + deaths);
-                    preferences.edit().putInt(getString(R.string.pref_case_data_global_confirmed), confirmed)
-                            .putInt(getString(R.string.pref_case_data_global_recovered), recovered)
-                            .putInt(getString(R.string.pref_case_data_global_deaths), deaths)
+                    String confirmed = "" + globalData.getInt("TotalConfirmed");
+                    String recovered = "" + globalData.getInt("TotalRecovered");
+                    String deaths = "" + globalData.getInt("TotalDeaths");
+
+                    globalConfirmedTextView.setText(confirmed);
+                    globalRecoveredTextView.setText(recovered);
+                    globalDeathsTextView.setText(deaths);
+
+                    preferences.edit().putString(getString(R.string.pref_case_data_global_confirmed), confirmed)
+                            .putString(getString(R.string.pref_case_data_global_recovered), recovered)
+                            .putString(getString(R.string.pref_case_data_global_deaths), deaths)
                             .apply();
                 } catch (JSONException e) {
                     Log.d("log", e.getMessage());
@@ -330,7 +326,7 @@ public class FragmentHome extends Fragment implements LocationListener {
                     Log.d("Home", "Address Received\n" + addresses);
                     countryName = addresses.get(0).getCountryName();
                     stateName = addresses.get(0).getAdminArea();
-                    setData();
+                    setData(stateName, countryName);
                     preferences.edit().putString(getString(R.string.pref_case_data_district_name), addresses.get(0).getSubAdminArea()).apply();
                     setDistrictData();
                 } catch (IOException e) {

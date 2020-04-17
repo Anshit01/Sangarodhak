@@ -42,12 +42,10 @@ public class StatsWorldActivity extends AppCompatActivity {
     private TextView recoveredTextView;
     private TextView deathsTextView;
 
-    private int confirmed;
-    private int recovered;
-    private int deaths;
+    private String confirmed, recovered, deaths;
 
     Gson gson = new Gson();
-    SharedPreferences statsPreference;
+    SharedPreferences statsPreference, caseDataPreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +60,7 @@ public class StatsWorldActivity extends AppCompatActivity {
         deathsTextView = findViewById(R.id.global_total_deaths);
 
         statsPreference = getSharedPreferences(getString(R.string.pref_stats_data), MODE_PRIVATE);
+        caseDataPreference = getSharedPreferences(getString(R.string.pref_case_data), MODE_PRIVATE);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -88,10 +87,6 @@ public class StatsWorldActivity extends AppCompatActivity {
                                 "" + country.getInt("TotalRecovered"),
                                 "" + country.getInt("TotalDeaths")));
                     }
-                    JSONObject globalData = response.getJSONObject("Global");
-                    confirmed = globalData.getInt("TotalConfirmed");
-                    recovered = globalData.getInt("TotalRecovered");
-                    deaths = globalData.getInt("TotalDeaths");
                     showStats();
                 } catch (JSONException e) {
                     Log.d("World Stats", "" + e.getMessage());
@@ -119,14 +114,14 @@ public class StatsWorldActivity extends AppCompatActivity {
     private void saveAllData() {
         String allData = gson.toJson(allCountryData);
 
-        statsPreference.edit().putString(getString(R.string.pref_stats_global_data), allData)
-                .putInt(getString(R.string.pref_case_data_global_confirmed), confirmed)
-                .putInt(getString(R.string.pref_case_data_global_recovered), recovered)
-                .putInt(getString(R.string.pref_case_data_global_deaths), deaths)
-                .apply();
+        statsPreference.edit().putString(getString(R.string.pref_stats_global_data), allData).apply();
     }
 
     private void retrieveData() {
+
+        confirmed = caseDataPreference.getString(getString(R.string.pref_case_data_global_confirmed), "0");
+        recovered = caseDataPreference.getString(getString(R.string.pref_case_data_global_recovered), "0");
+        deaths = caseDataPreference.getString(getString(R.string.pref_case_data_global_deaths), "0");
 
         String allData = statsPreference.getString(getString(R.string.pref_stats_global_data), "[]");
 
@@ -135,10 +130,6 @@ public class StatsWorldActivity extends AppCompatActivity {
             }.getType();
 
             allCountryData = gson.fromJson(allData, type);
-
-            confirmed = statsPreference.getInt(getString(R.string.pref_case_data_global_confirmed), 0);
-            recovered = statsPreference.getInt(getString(R.string.pref_case_data_global_recovered), 0);
-            deaths = statsPreference.getInt(getString(R.string.pref_case_data_global_deaths), 0);
 
             showStats();
         }

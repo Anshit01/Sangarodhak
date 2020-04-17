@@ -17,14 +17,15 @@
         <activity android:name=".StatsStateActivity"/>
         <activity android:name=".StatsIndiaActivity" />
         <activity android:name=".StatsWorldActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".DashBoardActivity">
+        <activity android:name=".SplashScreenActivity"
+            android:theme="@style/SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".DashBoardActivity"/>
     </application>
 
 </manifest>
