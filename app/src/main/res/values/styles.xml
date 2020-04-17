@@ -14,4 +14,8 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="ProgressBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">@color/black</item>
+    </style>
+
 </resources>

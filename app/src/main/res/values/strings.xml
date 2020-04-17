@@ -47,4 +47,21 @@
     <string name="pref_district_confirmed">PREF_DISTRICT_CONFIRMED</string>
 
 
+    <!--PM Cares Fund Details-->
+    <string name="pm_cares_account_name">PM CARES</string>
+    <string name="pm_cares_account_number">2121PM20202</string>
+    <string name="pm_cares_account_ifsc_code">SBIN0000691</string>
+    <string name="pm_cares_account_upi">pmcares@sbi</string>
+
+    <!--UPI App Package Names-->
+    <string name="paytm_package_name">net.one97.paytm</string>
+    <string name="google_pay_package_name">com.google.android.apps.nbu.paisa.user</string>
+    <string name="phone_pe_package_name">com.phonepe.app.preprod</string>
+
+    <!--Stats Data Stored-->
+    <string name="pref_stats_data">team.hashbash.sangarodhak.stats_data</string>
+    <string name="pref_stats_state_data">PREF_STATE_DATA</string>
+    <string name="pref_stats_country_data">PREF_COUNTRY_DATA</string>
+    <string name="pref_stats_global_data">PREF_GLOBAL_DATA</string>
+
 </resources>

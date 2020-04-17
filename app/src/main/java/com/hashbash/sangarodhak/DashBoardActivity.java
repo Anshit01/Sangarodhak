@@ -49,9 +49,6 @@ public class DashBoardActivity extends AppCompatActivity {
 
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, GET_LOCATION);
 
-        openAttendance = getIntent().getBooleanExtra("openAttendance", false);
-        openAnnouncement = getIntent().getBooleanExtra("openAnnouncement", false);
-
         final ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new FragmentNotice());
         fragments.add(new FragmentFunZone());
@@ -68,8 +65,6 @@ public class DashBoardActivity extends AppCompatActivity {
 
         viewPage.setCurrentItem(2);
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
-
-        viewPage.setOffscreenPageLimit(4);
 
         viewPage.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
