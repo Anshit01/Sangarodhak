@@ -80,12 +80,14 @@ public class FragmentSupplies extends Fragment {
     }
 
     public static void updateCartDetails() {
-        
+
         SupplyItemsDataModal lastItem = allItemsAddedInCart.get(allItemsAddedInCart.size()-1);
 
         for(int i = 0; i < allItemsAddedInCart.size()-1; i++){
-            if(allItemsAddedInCart.get(i).getItemName().equals(lastItem.getItemName())){
-                allItemsAddedInCart.remove(i);
+            if(allItemsAddedInCart.get(i).getItemName().equals(lastItem.getItemName())) {
+                allItemsAddedInCart.get(i).setQuantityBought(lastItem.getQuantityBought());
+                allItemsAddedInCart.remove(lastItem);
+                break;
             }
         }
 
