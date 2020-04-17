@@ -328,7 +328,9 @@ public class FragmentHome extends Fragment implements LocationListener {
                 try {
                     addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                     Log.d("Home", "Address Received\n" + addresses);
-                    setData(addresses.get(0).getCountryName(), addresses.get(0).getAdminArea());
+                    countryName = addresses.get(0).getCountryName();
+                    stateName = addresses.get(0).getAdminArea();
+                    setData();
                     preferences.edit().putString(getString(R.string.pref_case_data_district_name), addresses.get(0).getSubAdminArea()).apply();
                     setDistrictData();
                 } catch (IOException e) {
