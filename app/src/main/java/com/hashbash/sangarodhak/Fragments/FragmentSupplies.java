@@ -26,12 +26,36 @@ import java.util.ArrayList;
 public class FragmentSupplies extends Fragment {
 
     public static RecyclerView recyclerView, cartRecyclerView;
-    private LinearLayout cartLayout, viewCartView;
-    private BottomSheetBehavior bottomSheetBehavior;
     public static ArrayList<SupplyItemsDataModal> allItemsAvailable = new ArrayList<>(), allItemsAddedInCart = new ArrayList<>();
-
     private static TextView checkoutAmount, noOfItems;
     private static Context context;
+    private LinearLayout cartLayout, viewCartView;
+    private BottomSheetBehavior bottomSheetBehavior;
+
+    public static void updateCartDetails() {
+
+        if (allItemsAddedInCart.size() > 0) {
+            SupplyItemsDataModal lastItem = allItemsAddedInCart.get(allItemsAddedInCart.size() - 1);
+
+            for (int i = 0; i < allItemsAddedInCart.size() - 1; i++) {
+                if (allItemsAddedInCart.get(i).getItemName().equals(lastItem.getItemName())) {
+                    allItemsAddedInCart.get(i).setQuantityBought(Math.min(allItemsAddedInCart.get(i).getQuantityBought() + lastItem.getQuantityBought(), allItemsAddedInCart.get(i).getQuantityAvailable()));
+                    allItemsAddedInCart.remove(lastItem);
+                    break;
+                }
+            }
+        }
+
+        noOfItems.setText(MessageFormat.format("{0}", allItemsAddedInCart.size()));
+
+        int priceSum = 0;
+
+        for (int i = 0; i < allItemsAddedInCart.size(); i++)
+            priceSum += allItemsAddedInCart.get(i).getItemRate() * allItemsAddedInCart.get(i).getQuantityBought();
+
+        checkoutAmount.setText(MessageFormat.format("₹ {0}", priceSum));
+
+    }
 
     @Nullable
     @Override
@@ -77,28 +101,5 @@ public class FragmentSupplies extends Fragment {
         updateCartDetails();
 
         return view;
-    }
-
-    public static void updateCartDetails() {
-
-        SupplyItemsDataModal lastItem = allItemsAddedInCart.get(allItemsAddedInCart.size()-1);
-
-        for(int i = 0; i < allItemsAddedInCart.size()-1; i++){
-            if(allItemsAddedInCart.get(i).getItemName().equals(lastItem.getItemName())) {
-                allItemsAddedInCart.get(i).setQuantityBought(lastItem.getQuantityBought());
-                allItemsAddedInCart.remove(lastItem);
-                break;
-            }
-        }
-
-        noOfItems.setText(MessageFormat.format("{0}", allItemsAddedInCart.size()));
-
-        int priceSum = 0;
-
-        for (int i = 0; i < allItemsAddedInCart.size(); i++)
-            priceSum += allItemsAddedInCart.get(i).getItemRate() * allItemsAddedInCart.get(i).getQuantityBought();
-
-        checkoutAmount.setText(MessageFormat.format("₹ {0}", priceSum));
-
     }
 }

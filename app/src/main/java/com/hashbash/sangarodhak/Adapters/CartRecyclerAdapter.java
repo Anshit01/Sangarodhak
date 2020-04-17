@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import com.hashbash.sangarodhak.Fragments.FragmentSupplies;
 import com.hashbash.sangarodhak.Modals.SupplyItemsDataModal;
 import com.hashbash.sangarodhak.R;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 
@@ -42,13 +44,13 @@ public class CartRecyclerAdapter extends RecyclerView.Adapter<CartRecyclerAdapte
         holder.itemName.setText(thisItem.getItemName());
         holder.itemRate.setText(String.format("₹ %d per %s", thisItem.getItemRate(), thisItem.getQuantityType()));
 
-        holder.quantityBuy.setText(String.format("%d %s", thisItem.getQuantityBought() , thisItem.getQuantityType()));
+        holder.quantityBuy.setText(MessageFormat.format("{0}{1}", thisItem.getQuantityBought(), thisItem.getQuantityType()));
         holder.quantityPrice.setText(String.format("₹ %d", thisItem.getQuantityBought() * thisItem.getItemRate()));
 
         holder.itemView.findViewById(R.id.button_add).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (thisItem.getQuantityBought() < 5)
+                if (thisItem.getQuantityBought() < thisItem.getQuantityAvailable())
                     thisItem.setQuantityBought(thisItem.getQuantityBought() + 1);
                 holder.quantityBuy.setText(String.format("%d %s", thisItem.getQuantityBought(), thisItem.getQuantityType()));
                 holder.quantityPrice.setText(String.format("₹ %d", thisItem.getQuantityBought() * thisItem.getItemRate()));
