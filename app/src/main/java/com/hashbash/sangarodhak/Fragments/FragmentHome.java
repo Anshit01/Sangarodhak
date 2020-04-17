@@ -41,7 +41,6 @@ import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.hashbash.sangarodhak.R;
 import com.hashbash.sangarodhak.StatsIndiaActivity;
 import com.hashbash.sangarodhak.StatsStateActivity;
@@ -60,6 +59,9 @@ import static android.content.Context.LOCATION_SERVICE;
 public class FragmentHome extends Fragment implements LocationListener {
 
     private final int GET_LOCATION = 12;
+
+    private String stateName;
+    private String countryName;
 
     private SharedPreferences sharedPreferences;
     private TextView state[] = new TextView[5];
@@ -134,6 +136,7 @@ public class FragmentHome extends Fragment implements LocationListener {
 
         getSharedPreferenceData();
         setGlobalData();
+        setData();
 
         manager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
         geocoder = new Geocoder(getContext(), Locale.getDefault());
@@ -151,13 +154,15 @@ public class FragmentHome extends Fragment implements LocationListener {
     }
 
     private void getSharedPreferenceData() {
-        state[0].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_state_name), "State"));
+        stateName = preferences.getString(getString(R.string.pref_case_data_state_name), "State");
+        countryName = preferences.getString(getString(R.string.pref_case_data_country_name), "Country");
+        state[0].setText(stateName);
         state[1].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_state_total_cases), "0"));
         state[2].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_state_active), "0"));
         state[3].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_state_recovered), "0"));
         state[4].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_state_dead), "0"));
 
-        country[0].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_country_name), "Country"));
+        country[0].setText(countryName);
         country[1].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_country_total_cases), "0"));
         country[2].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_country_active), "0"));
         country[3].setText(preferences.getString(getActivity().getString(R.string.pref_case_data_country_recovered), "0"));
@@ -170,7 +175,7 @@ public class FragmentHome extends Fragment implements LocationListener {
     }
 
 
-    private void setData(final String countryName, final String stateName) {
+    private void setData() {
         state[0].setText(stateName);
         country[0].setText(countryName);
 
@@ -320,7 +325,9 @@ public class FragmentHome extends Fragment implements LocationListener {
         try {
             addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             Log.d("Home", "Address Received\n" + addresses);
-            setData(addresses.get(0).getCountryName(), addresses.get(0).getAdminArea());
+            stateName = addresses.get(0).getAdminArea();
+            countryName = addresses.get(0).getCountryName();
+            setData();
             preferences.edit().putString(getString(R.string.pref_case_data_district_name), addresses.get(0).getSubAdminArea());
             setDistrictData();
         } catch (IOException e) {
