@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hashbash.sangarodhak.Adapters.CountryDataRecyclerAdapter;
 import com.hashbash.sangarodhak.Modals.CountryCaseDataModal;
+import com.hashbash.sangarodhak.Modals.GlobalCaseDataModal;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,6 +29,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class StatsIndiaActivity extends AppCompatActivity {
 
@@ -111,7 +113,7 @@ public class StatsIndiaActivity extends AppCompatActivity {
         confirmedTextView.setText(confirmed);
         recoveredTextView.setText(recovered);
         deathsTextView.setText(deaths);
-
+        sortArrayList();
         recyclerView.setAdapter(new CountryDataRecyclerAdapter(this, allStates));
         saveAllData();
     }
@@ -144,4 +146,15 @@ public class StatsIndiaActivity extends AppCompatActivity {
 
     }
 
+    private void sortArrayList(){
+        allStates.sort(new SortStatesByCofirmedCases());
+    }
+
+}
+
+class SortStatesByCofirmedCases implements Comparator<CountryCaseDataModal>
+{
+    public int compare(CountryCaseDataModal a, CountryCaseDataModal b){
+        return Integer.parseInt(b.getTotalCases()) - Integer.parseInt(a.getTotalCases());
+    }
 }

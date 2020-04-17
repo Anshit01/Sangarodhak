@@ -28,6 +28,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class StatsWorldActivity extends AppCompatActivity {
 
@@ -110,6 +111,7 @@ public class StatsWorldActivity extends AppCompatActivity {
         confirmedTextView.setText("" + confirmed);
         recoveredTextView.setText("" + recovered);
         deathsTextView.setText("" + deaths);
+        sortArrayList();
         recyclerView.setAdapter(new GlobalDataRecyclerAdapter(this, allCountryData));
         saveAllData();
     }
@@ -141,5 +143,17 @@ public class StatsWorldActivity extends AppCompatActivity {
             showStats();
         }
 
+    }
+
+    private void sortArrayList(){
+        allCountryData.sort(new SortCountriesByCofirmedCases());
+    }
+
+}
+
+class SortCountriesByCofirmedCases implements Comparator<GlobalCaseDataModal>
+{
+    public int compare(GlobalCaseDataModal a, GlobalCaseDataModal b){
+        return Integer.parseInt(b.getTotalCases()) - Integer.parseInt(a.getTotalCases());
     }
 }

@@ -20,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hashbash.sangarodhak.Adapters.StateDataRecyclerAdapter;
+import com.hashbash.sangarodhak.Modals.CountryCaseDataModal;
 import com.hashbash.sangarodhak.Modals.GlobalCaseDataModal;
 import com.hashbash.sangarodhak.Modals.StateCaseDataModal;
 
@@ -29,6 +30,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class StatsStateActivity extends AppCompatActivity {
 
@@ -151,6 +153,7 @@ public class StatsStateActivity extends AppCompatActivity {
         confirmedTextView.setText(confirmed);
         recoveredTextView.setText(recovered);
         deathsTextView.setText(deaths);
+        sortArrayList();
         recyclerView.setAdapter(new StateDataRecyclerAdapter(this, allDistricts));
         saveAllData();
     }
@@ -184,4 +187,15 @@ public class StatsStateActivity extends AppCompatActivity {
 
     }
 
+    private void sortArrayList(){
+        allDistricts.sort(new SortDistrictsByCofirmedCases());
+    }
+
+}
+
+class SortDistrictsByCofirmedCases implements Comparator<StateCaseDataModal>
+{
+    public int compare(StateCaseDataModal a, StateCaseDataModal b){
+        return Integer.parseInt(b.getTotalCases()) - Integer.parseInt(a.getTotalCases());
+    }
 }
