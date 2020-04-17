@@ -1,9 +1,12 @@
 package com.hashbash.sangarodhak;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -14,13 +17,14 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.hashbash.sangarodhak.Adapters.SlidePageAdapter;
-import com.hashbash.sangarodhak.Fragments.FragmentHome;
 import com.hashbash.sangarodhak.Fragments.FragmentDonate;
-import com.hashbash.sangarodhak.Fragments.FragmentNotice;
 import com.hashbash.sangarodhak.Fragments.FragmentFunZone;
+import com.hashbash.sangarodhak.Fragments.FragmentHome;
+import com.hashbash.sangarodhak.Fragments.FragmentNotice;
 import com.hashbash.sangarodhak.Fragments.FragmentSupplies;
 
 import java.util.ArrayList;
@@ -47,7 +51,7 @@ public class DashBoardActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_dash_board);
 
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, GET_LOCATION);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, GET_LOCATION);
 
         final ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new FragmentNotice());
@@ -178,6 +182,26 @@ public class DashBoardActivity extends AppCompatActivity {
         fragments.add(new FragmentFunZone());
 
         adapter = new SlidePageAdapter(getSupportFragmentManager(), fragments);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LocationRequest.PRIORITY_HIGH_ACCURACY) {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    // All required changes were successfully made
+                    Log.i("DashBoard", "onActivityResult: GPS Enabled by user");
+                    break;
+                case Activity.RESULT_CANCELED:
+                    // The user was asked to change settings, but chose not to
+                    Log.i("DashBoard", "onActivityResult: User rejected GPS request");
+                    Toast.makeText(getApplicationContext(), "Displaying Saved Data", Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
 }

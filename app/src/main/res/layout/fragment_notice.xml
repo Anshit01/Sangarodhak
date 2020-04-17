@@ -69,7 +69,7 @@
         android:layout_height="0dp"
         android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_container" />
+        app:layout_constraintTop_toBottomOf="@+id/roundRectView" />
 
     <ProgressBar
         android:id="@+id/loading"

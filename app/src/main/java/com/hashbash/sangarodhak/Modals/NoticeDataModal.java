@@ -2,23 +2,28 @@ package com.hashbash.sangarodhak.Modals;
 
 public class NoticeDataModal {
 
-    private String imageLink, from, text;
+    private String imageLink, from, text, videoLink;
 
-    public NoticeDataModal(String imageLink, String from, String text) {
+    public NoticeDataModal(String imageLink, String from, String text, String videoLink) {
         this.imageLink = imageLink;
         this.from = from;
         this.text = text;
+        this.videoLink = videoLink;
     }
 
     public String getImageLink() {
-        return imageLink;
+        return "" + imageLink;
     }
 
     public String getFrom() {
-        return from;
+        return "" + from;
     }
 
     public String getText() {
-        return text;
+        return "" + text;
+    }
+
+    public String getVideoLink() {
+        return "" + videoLink;
     }
 }
