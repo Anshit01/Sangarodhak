@@ -66,6 +66,8 @@ public class DashBoardActivity extends AppCompatActivity {
         viewPage.setCurrentItem(2);
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
 
+        viewPage.setOffscreenPageLimit(5);
+
         viewPage.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
