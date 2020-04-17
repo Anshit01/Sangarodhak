@@ -18,4 +18,9 @@
         <item name="colorAccent">@color/black</item>
     </style>
 
+    <style name="StatusColorAccent" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/colorAccent</item>
+    </style>
+
 </resources>

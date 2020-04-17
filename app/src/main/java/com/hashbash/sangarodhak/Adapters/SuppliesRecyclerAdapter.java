@@ -67,8 +67,8 @@ public class SuppliesRecyclerAdapter extends RecyclerView.Adapter<SuppliesRecycl
             @Override
             public void onClick(View v) {
                 FragmentSupplies.allItemsAddedInCart.add(new SupplyItemsDataModal( thisItem.getItemName(), thisItem.getQuantityType(), thisItem.getQuantityAvailable(), thisItem.getItemRate(), holder.quantity));
-                FragmentSupplies.cartRecyclerView.getAdapter().notifyItemInserted(FragmentSupplies.allItemsAddedInCart.size());
                 FragmentSupplies.updateCartDetails();
+                FragmentSupplies.cartRecyclerView.setAdapter(new CartRecyclerAdapter(context, FragmentSupplies.allItemsAddedInCart));
             }
         });
     }

@@ -48,7 +48,7 @@ public class StatsStateActivity extends AppCompatActivity {
     private String deaths;
 
     Gson gson = new Gson();
-    SharedPreferences statsPreference;
+    SharedPreferences statsPreference, caseDataPreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +63,7 @@ public class StatsStateActivity extends AppCompatActivity {
         deathsTextView = findViewById(R.id.state_total_deaths);
 
         statsPreference = getSharedPreferences(getString(R.string.pref_stats_data), MODE_PRIVATE);
+        caseDataPreference = getSharedPreferences(getString(R.string.pref_case_data), MODE_PRIVATE);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -81,43 +82,6 @@ public class StatsStateActivity extends AppCompatActivity {
     private void fetchData() {
         String url = getString(R.string.url_all_districts);
         RequestQueue queue = Volley.newRequestQueue(this);
-
-        String url2 = getString(R.string.url_india_all_states);
-
-        JsonObjectRequest countryStatsRequest = new JsonObjectRequest
-                (Request.Method.GET, url2, null, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            if (response.getBoolean("success")) {
-                                JSONArray allStatesData = response.getJSONObject("data").getJSONArray("regional");
-                                JSONObject stateData = null;
-                                for (int i = 0; i < allStatesData.length(); i++) {
-                                    if (allStatesData.getJSONObject(i).getString("loc").equals(state)) {
-                                        stateData = allStatesData.getJSONObject(i);
-                                    }
-                                }
-                                if (stateData == null) {
-                                    throw new JSONException("State " + state + " not found.");
-                                }
-
-                                confirmed = "" + stateData.getInt("totalConfirmed");
-                                recovered = "" + stateData.getInt("discharged");
-                                deaths = "" + stateData.getInt("deaths");
-
-                            }
-                        } catch (JSONException e) {
-                            Log.d("log", "Error: " + e.getMessage());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("log", "ERROR in making request: " + error.toString());
-                    }
-                });
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -142,7 +106,6 @@ public class StatsStateActivity extends AppCompatActivity {
                 Log.d("log", "" + error.getMessage());
             }
         });
-        queue.add(countryStatsRequest);
         queue.add(request);
     }
 
@@ -158,20 +121,16 @@ public class StatsStateActivity extends AppCompatActivity {
     private void saveAllData() {
         String allData = gson.toJson(allDistricts);
 
-        statsPreference.edit().putString(getString(R.string.pref_stats_state_data), allData)
-                .putString(getString(R.string.pref_case_data_state_total_cases), confirmed)
-                .putString(getString(R.string.pref_case_data_state_recovered), recovered)
-                .putString(getString(R.string.pref_case_data_state_dead), deaths)
-                .apply();
+        statsPreference.edit().putString(getString(R.string.pref_stats_state_data), allData).apply();
     }
 
     private void retrieveData() {
 
         String allData = statsPreference.getString(getString(R.string.pref_stats_state_data), "[]");
 
-        confirmed = statsPreference.getString(getString(R.string.pref_case_data_state_total_cases), "0");
-        recovered = statsPreference.getString(getString(R.string.pref_case_data_state_recovered), "0");
-        deaths = statsPreference.getString(getString(R.string.pref_case_data_state_dead), "0");
+        confirmed = caseDataPreference.getString(getString(R.string.pref_case_data_state_total_cases), "0");
+        recovered = caseDataPreference.getString(getString(R.string.pref_case_data_state_recovered), "0");
+        deaths = caseDataPreference.getString(getString(R.string.pref_case_data_state_dead), "0");
 
         if (!allData.equals("[]")) {
             Type type = new TypeToken<ArrayList<StateCaseDataModal>>() {
