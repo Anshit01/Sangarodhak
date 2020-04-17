@@ -219,7 +219,8 @@ public class FragmentHome extends Fragment implements LocationListener {
                                 state[3].setText(stateValues[2]);
                                 state[4].setText(stateValues[3]);
 
-                                preferences.edit().putString(getContext().getString(R.string.pref_case_data_state_name), stateName)
+                                preferences.edit()
+                                        .putString(getContext().getString(R.string.pref_case_data_state_name), stateName)
                                         .putString(getContext().getString(R.string.pref_case_data_state_total_cases), stateValues[0])
                                         .putString(getContext().getString(R.string.pref_case_data_state_active), stateValues[1])
                                         .putString(getContext().getString(R.string.pref_case_data_state_recovered), stateValues[2])
