@@ -63,8 +63,7 @@ public class NoticeRecyclerAdapter extends RecyclerView.Adapter<NoticeRecyclerAd
                     holder.noticeVideo.start();
                 }
             });
-        }
-        else
+        } else
             holder.noticeVideo.setVisibility(View.GONE);
 
         String normalText = thisNotice.getText();

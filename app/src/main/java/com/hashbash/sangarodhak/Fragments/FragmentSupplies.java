@@ -1,5 +1,6 @@
 package com.hashbash.sangarodhak.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ public class FragmentSupplies extends Fragment {
     public static ArrayList<SupplyItemsDataModal> allItemsAvailable = new ArrayList<>(), allItemsAddedInCart = new ArrayList<>();
 
     private static TextView checkoutAmount, noOfItems;
+    private static Context context;
 
     @Nullable
     @Override
@@ -48,6 +50,8 @@ public class FragmentSupplies extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        context = getContext();
 
         viewCartView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +82,7 @@ public class FragmentSupplies extends Fragment {
     public static void updateCartDetails() {
         
         SupplyItemsDataModal lastItem = allItemsAddedInCart.get(allItemsAddedInCart.size()-1);
+
         for(int i = 0; i < allItemsAddedInCart.size()-1; i++){
             if(allItemsAddedInCart.get(i).getItemName().equals(lastItem.getItemName())){
                 allItemsAddedInCart.remove(i);
