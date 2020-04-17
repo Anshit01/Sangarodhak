@@ -63,7 +63,7 @@ public class FragmentNotice extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 allNotice = new ArrayList<>();
                 for (int i = (int) dataSnapshot.getChildrenCount() - 1; i >= 0; i--)
-                    allNotice.add(new NoticeDataModal((String) dataSnapshot.child("" + i).child("image").getValue(), (String) dataSnapshot.child("" + i).child("from").getValue(), (String) dataSnapshot.child("" + i).child("text").getValue()));
+                    allNotice.add(new NoticeDataModal((String) dataSnapshot.child("" + i).child("image").getValue(), (String) dataSnapshot.child("" + i).child("from").getValue(), (String) dataSnapshot.child("" + i).child("text").getValue(), (String) dataSnapshot.child("" + i).child("video").getValue()));
                 showNotice();
             }
 

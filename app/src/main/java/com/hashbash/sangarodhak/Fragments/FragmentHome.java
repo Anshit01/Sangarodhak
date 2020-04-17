@@ -1,7 +1,6 @@
 package com.hashbash.sangarodhak.Fragments;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,7 +39,6 @@ import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.hashbash.sangarodhak.R;
 import com.hashbash.sangarodhak.StatsIndiaActivity;
 import com.hashbash.sangarodhak.StatsStateActivity;
@@ -138,13 +135,13 @@ public class FragmentHome extends Fragment implements LocationListener {
         manager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
         geocoder = new Geocoder(getContext(), Locale.getDefault());
 
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ) {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60 * 1000, 50, this);
             if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 50, this);
-            } else if (!preferences.getString(getContext().getString(R.string.pref_case_data_state_total_cases), "hi").equals("hi"))
+                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 50, this);
+            } else if (preferences.getString(getContext().getString(R.string.pref_case_data_state_total_cases), "hi").equals("hi"))
                 askGPSTurnOn();
-        }
-        else
+        } else
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, GET_LOCATION);
 
         return view;
@@ -277,10 +274,10 @@ public class FragmentHome extends Fragment implements LocationListener {
         queue.add(request);
     }
 
-    private void setDistrictData(){
+    private void setDistrictData() {
         final String district = preferences.getString(getString(R.string.pref_case_data_district_name), null);
         final String state = preferences.getString(getString(R.string.pref_case_data_state_name), null);
-        if(district == null || state == null){
+        if (district == null || state == null) {
 
             return;
         }
@@ -291,13 +288,12 @@ public class FragmentHome extends Fragment implements LocationListener {
             public void onResponse(JSONObject response) {
                 try {
                     JSONObject districtsData = response.getJSONObject(state).getJSONObject("districtData");
-                    if(districtsData.has(district)){
+                    if (districtsData.has(district)) {
                         int confirmed = districtsData.getJSONObject(district).getInt("confirmed");
-                        preferences.edit().putInt(getString(R.string.pref_case_data_district_confirmed), confirmed);
+                        preferences.edit().putInt(getString(R.string.pref_case_data_district_confirmed), confirmed).apply();
                         Log.d("log", "Cases in " + district + ": " + confirmed);
                         //TODO
-                    }
-                    else{
+                    } else {
                         //TODO
                         Log.d("log", "No cases in " + district + "!");
                     }
@@ -314,18 +310,23 @@ public class FragmentHome extends Fragment implements LocationListener {
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(final Location location) {
         Log.d("Home", "Location Changed\n" + location);
-        try {
-            addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            Log.d("Home", "Address Received\n" + addresses);
-            setData(addresses.get(0).getCountryName(), addresses.get(0).getAdminArea());
-            preferences.edit().putString(getString(R.string.pref_case_data_district_name), addresses.get(0).getSubAdminArea());
-            setDistrictData();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d("Home", "Address Not Received");
-        }
+        new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                    Log.d("Home", "Address Received\n" + addresses);
+                    setData(addresses.get(0).getCountryName(), addresses.get(0).getAdminArea());
+                    preferences.edit().putString(getString(R.string.pref_case_data_district_name), addresses.get(0).getSubAdminArea()).apply();
+                    setDistrictData();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.d("Home", "Address Not Received");
+                }
+            }
+        }.run();
     }
 
     @Override
@@ -387,27 +388,5 @@ public class FragmentHome extends Fragment implements LocationListener {
                 }
             }
         });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LocationRequest.PRIORITY_HIGH_ACCURACY) {
-            switch (resultCode) {
-                case Activity.RESULT_OK:
-                    // All required changes were successfully made
-                    if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-                        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 50, this);
-                    Log.i("DashBoard", "onActivityResult: GPS Enabled by user");
-                    break;
-                case Activity.RESULT_CANCELED:
-                    // The user was asked to change settings, but chose not to
-                    Log.i("DashBoard", "onActivityResult: User rejected GPS request");
-                    Toast.makeText(getActivity(),"Displaying Saved Data", Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 }
