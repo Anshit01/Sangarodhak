@@ -65,4 +65,12 @@
     <string name="pref_stats_global_data">PREF_GLOBAL_DATA</string>
     <string name="pref_stats_notice_data">PREF_NOTICE_DATA</string>
 
+    <!--Supplies-->
+    <string-array name="supplies_item_array">
+        <item>Item1</item>
+        <item>Item2</item>
+        <item>Item3</item>
+        <item>Item4</item>
+    </string-array>
+
 </resources>
