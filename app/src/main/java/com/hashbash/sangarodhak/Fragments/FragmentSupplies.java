@@ -76,8 +76,13 @@ public class FragmentSupplies extends Fragment {
     }
 
     public static void updateCartDetails() {
-
-        //TODO make items unique in allItemsInCart
+        
+        SupplyItemsDataModal lastItem = allItemsAddedInCart.get(allItemsAddedInCart.size()-1);
+        for(int i = 0; i < allItemsAddedInCart.size()-1; i++){
+            if(allItemsAddedInCart.get(i).getItemName().equals(lastItem.getItemName())){
+                allItemsAddedInCart.remove(i);
+            }
+        }
 
         noOfItems.setText(MessageFormat.format("{0}", allItemsAddedInCart.size()));
 
