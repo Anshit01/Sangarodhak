@@ -17,13 +17,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.hashbash.sangarodhak.Adapters.NoticeRecyclerAdapter;
+import com.hashbash.sangarodhak.Modals.NoticeDataModal;
 import com.hashbash.sangarodhak.R;
+
+import java.util.ArrayList;
 
 public class FragmentNotice extends Fragment {
 
     private RecyclerView recyclerView;
     private DataSnapshot Data;
     private ProgressBar loading;
+
+    private ArrayList<NoticeDataModal> allNotice;
 
     @Nullable
     @Override
@@ -43,8 +48,11 @@ public class FragmentNotice extends Fragment {
         FirebaseDatabase.getInstance().getReference("notice").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Data = dataSnapshot;
-                recyclerView.setAdapter(new NoticeRecyclerAdapter(getContext(), Data));
+                allNotice = new ArrayList<>();
+                for (int i = (int) dataSnapshot.getChildrenCount() - 1; i >= 0; i--)
+                    allNotice.add(new NoticeDataModal(dataSnapshot.child(""+i).child("image").toString(), dataSnapshot.child(""+i).child("from").toString(), dataSnapshot.child(""+i).child("text").toString() ));
+
+                recyclerView.setAdapter(new NoticeRecyclerAdapter(getContext(), allNotice));
                 loading.setVisibility(View.GONE);
             }
 

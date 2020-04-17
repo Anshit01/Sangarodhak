@@ -1,5 +1,6 @@
 package com.hashbash.sangarodhak;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +16,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hashbash.sangarodhak.Adapters.GlobalDataRecyclerAdapter;
 import com.hashbash.sangarodhak.Modals.GlobalCaseDataModal;
 
@@ -22,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class StatsWorldActivity extends AppCompatActivity {
@@ -32,6 +36,9 @@ public class StatsWorldActivity extends AppCompatActivity {
 
     ProgressBar progressBar;
 
+    Gson gson = new Gson();
+    SharedPreferences statsPreference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +46,12 @@ public class StatsWorldActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.loading);
         recyclerView = findViewById(R.id.recycler_view);
+
+        statsPreference = getSharedPreferences(getString(R.string.pref_stats_data), MODE_PRIVATE);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        retrieveData();
 
         fetchData();
     }
@@ -53,6 +65,7 @@ public class StatsWorldActivity extends AppCompatActivity {
                 try {
                     JSONArray statesData = response.getJSONArray("Countries");
                     int len = statesData.length();
+                    allCountryData = new ArrayList<>();
                     for (int i = 0; i < len; i++) {
                         JSONObject country = statesData.getJSONObject(i);
                         allCountryData.add(new GlobalCaseDataModal(country.getString("CountryCode"), country.getString("Country"),
@@ -78,6 +91,27 @@ public class StatsWorldActivity extends AppCompatActivity {
     private void showStats() {
         progressBar.setVisibility(View.GONE);
         recyclerView.setAdapter(new GlobalDataRecyclerAdapter(this, allCountryData));
+        saveAllData();
     }
 
+    private void saveAllData() {
+        String allData = gson.toJson(allCountryData);
+
+        statsPreference.edit().putString(getString(R.string.pref_stats_global_data), allData).apply();
+    }
+
+    private void retrieveData() {
+
+        String allData = statsPreference.getString(getString(R.string.pref_stats_global_data), "[]");
+
+        if (!allData.equals("[]")) {
+            Type type = new TypeToken<ArrayList<GlobalCaseDataModal>>() {
+            }.getType();
+
+            allCountryData = gson.fromJson(allData, type);
+
+            showStats();
+        }
+
+    }
 }

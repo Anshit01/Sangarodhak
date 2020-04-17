@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.database.DataSnapshot;
+import com.hashbash.sangarodhak.Modals.NoticeDataModal;
 import com.hashbash.sangarodhak.R;
 
 import java.util.ArrayList;
@@ -22,13 +22,12 @@ import java.util.ArrayList;
 
 public class NoticeRecyclerAdapter extends RecyclerView.Adapter<NoticeRecyclerAdapter.AnnouncementViewHolder> {
     private Context context;
-    private DataSnapshot dataSnapshot;
-    private int arraySize;
 
-    public NoticeRecyclerAdapter(Context context, DataSnapshot dataSnapshot) {
+    private ArrayList<NoticeDataModal> allNotice;
+
+    public NoticeRecyclerAdapter(Context context, ArrayList<NoticeDataModal> allNotice) {
         this.context = context;
-        this.dataSnapshot = dataSnapshot;
-        arraySize = (int) dataSnapshot.getChildrenCount();
+        this.allNotice = allNotice;
     }
 
     @NonNull
@@ -41,8 +40,11 @@ public class NoticeRecyclerAdapter extends RecyclerView.Adapter<NoticeRecyclerAd
 
     @Override
     public void onBindViewHolder(@NonNull final AnnouncementViewHolder holder, final int position) {
-        Glide.with(context).load(dataSnapshot.child("" + (arraySize - position - 1)).child("image").getValue()).into(holder.noticeImage);
-        String normalText = (String) dataSnapshot.child("" + (arraySize - position - 1)).child("text").getValue();
+
+        NoticeDataModal thisNotice = allNotice.get(position);
+
+        Glide.with(context).load(thisNotice.getImageLink()).into(holder.noticeImage);
+        String normalText = thisNotice.getText();
         ArrayList<Integer> asterisks = new ArrayList<>();
         ArrayList<Integer> underscores = new ArrayList<>();
         assert normalText != null;
@@ -66,12 +68,12 @@ public class NoticeRecyclerAdapter extends RecyclerView.Adapter<NoticeRecyclerAd
             convertText.delete(underscores.get(i + 1) - i - 1, underscores.get(i + 1) - i);
         }
         holder.noticeText.setText(convertText);
-        holder.noticeFrom.setText((String) dataSnapshot.child("" + (arraySize - position - 1)).child("from").getValue());
+        holder.noticeFrom.setText(thisNotice.getText());
     }
 
     @Override
     public int getItemCount() {
-        return arraySize;
+        return allNotice.size();
     }
 
     static class AnnouncementViewHolder extends RecyclerView.ViewHolder {
