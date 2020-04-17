@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,6 +39,14 @@ public class StatsStateActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ProgressBar progressBar;
 
+    private TextView confirmedTextView;
+    private TextView recoveredTextView;
+    private TextView deathsTextView;
+
+    private String confirmed;
+    private String recovered;
+    private String deaths;
+
     Gson gson = new Gson();
     SharedPreferences statsPreference;
 
@@ -49,11 +58,15 @@ public class StatsStateActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.loading);
         recyclerView = findViewById(R.id.recycler_view);
 
+        confirmedTextView = findViewById(R.id.state_total_confirmed);
+        recoveredTextView = findViewById(R.id.state_total_recovered);
+        deathsTextView = findViewById(R.id.state_total_deaths);
+
         statsPreference = getSharedPreferences(getString(R.string.pref_stats_data), MODE_PRIVATE);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        Log.d("log", "asdfd");
+
         if (savedInstanceState != null) {
             state = savedInstanceState.getString("state");
         } else {
@@ -68,6 +81,44 @@ public class StatsStateActivity extends AppCompatActivity {
     private void fetchData() {
         String url = getString(R.string.url_all_districts);
         RequestQueue queue = Volley.newRequestQueue(this);
+
+        String url2 = getString(R.string.url_india_all_states);
+
+        JsonObjectRequest countryStatsRequest = new JsonObjectRequest
+                (Request.Method.GET, url2, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.getBoolean("success")) {
+                                JSONArray allStatesData = response.getJSONObject("data").getJSONArray("regional");
+                                JSONObject stateData = null;
+                                for (int i = 0; i < allStatesData.length(); i++) {
+                                    if (allStatesData.getJSONObject(i).getString("loc").equals(state)) {
+                                        stateData = allStatesData.getJSONObject(i);
+                                    }
+                                }
+                                if (stateData == null) {
+                                    throw new JSONException("State " + state + " not found.");
+                                }
+
+                                confirmed = "" + stateData.getInt("totalConfirmed");
+                                recovered = "" + stateData.getInt("discharged");
+                                deaths = "" + stateData.getInt("deaths");
+
+                            }
+                        } catch (JSONException e) {
+                            Log.d("log", "Error: " + e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("log", "ERROR in making request: " + error.toString());
+                    }
+                });
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -91,11 +142,15 @@ public class StatsStateActivity extends AppCompatActivity {
                 Log.d("log", "" + error.getMessage());
             }
         });
+        queue.add(countryStatsRequest);
         queue.add(request);
     }
 
     private void showStats() {
         progressBar.setVisibility(View.GONE);
+        confirmedTextView.setText(confirmed);
+        recoveredTextView.setText(recovered);
+        deathsTextView.setText(deaths);
         recyclerView.setAdapter(new StateDataRecyclerAdapter(this, allDistricts));
         saveAllData();
     }
@@ -103,12 +158,20 @@ public class StatsStateActivity extends AppCompatActivity {
     private void saveAllData() {
         String allData = gson.toJson(allDistricts);
 
-        statsPreference.edit().putString(getString(R.string.pref_stats_state_data), allData).apply();
+        statsPreference.edit().putString(getString(R.string.pref_stats_state_data), allData)
+                .putString(getString(R.string.pref_case_data_state_total_cases), confirmed)
+                .putString(getString(R.string.pref_case_data_state_recovered), recovered)
+                .putString(getString(R.string.pref_case_data_state_dead), deaths)
+                .apply();
     }
 
     private void retrieveData() {
 
         String allData = statsPreference.getString(getString(R.string.pref_stats_state_data), "[]");
+
+        confirmed = statsPreference.getString(getString(R.string.pref_case_data_state_total_cases), "0");
+        recovered = statsPreference.getString(getString(R.string.pref_case_data_state_recovered), "0");
+        deaths = statsPreference.getString(getString(R.string.pref_case_data_state_dead), "0");
 
         if (!allData.equals("[]")) {
             Type type = new TypeToken<ArrayList<StateCaseDataModal>>() {

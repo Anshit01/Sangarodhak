@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,6 +37,14 @@ public class StatsWorldActivity extends AppCompatActivity {
 
     ProgressBar progressBar;
 
+    private TextView confirmedTextView;
+    private TextView recoveredTextView;
+    private TextView deathsTextView;
+
+    private int confirmed;
+    private int recovered;
+    private int deaths;
+
     Gson gson = new Gson();
     SharedPreferences statsPreference;
 
@@ -46,6 +55,10 @@ public class StatsWorldActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.loading);
         recyclerView = findViewById(R.id.recycler_view);
+
+        confirmedTextView = findViewById(R.id.global_total_confirmed);
+        recoveredTextView = findViewById(R.id.global_total_recovered);
+        deathsTextView = findViewById(R.id.global_total_deaths);
 
         statsPreference = getSharedPreferences(getString(R.string.pref_stats_data), MODE_PRIVATE);
 
@@ -63,17 +76,21 @@ public class StatsWorldActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    JSONArray statesData = response.getJSONArray("Countries");
-                    int len = statesData.length();
+                    JSONArray countriesData = response.getJSONArray("Countries");
+                    int len = countriesData.length();
                     allCountryData = new ArrayList<>();
                     for (int i = 0; i < len; i++) {
-                        JSONObject country = statesData.getJSONObject(i);
+                        JSONObject country = countriesData.getJSONObject(i);
                         allCountryData.add(new GlobalCaseDataModal(country.getString("CountryCode"), country.getString("Country"),
                                 "" + country.getInt("TotalConfirmed"),
                                 "" + (country.getInt("TotalConfirmed") - country.getInt("TotalRecovered") - country.getInt("TotalDeaths")),
                                 "" + country.getInt("TotalRecovered"),
                                 "" + country.getInt("TotalDeaths")));
                     }
+                    JSONObject globalData = response.getJSONObject("Global");
+                    confirmed = globalData.getInt("TotalConfirmed");
+                    recovered = globalData.getInt("TotalRecovered");
+                    deaths = globalData.getInt("TotalDeaths");
                     showStats();
                 } catch (JSONException e) {
                     Log.d("World Stats", "" + e.getMessage());
@@ -90,6 +107,9 @@ public class StatsWorldActivity extends AppCompatActivity {
 
     private void showStats() {
         progressBar.setVisibility(View.GONE);
+        confirmedTextView.setText("" + confirmed);
+        recoveredTextView.setText("" + recovered);
+        deathsTextView.setText("" + deaths);
         recyclerView.setAdapter(new GlobalDataRecyclerAdapter(this, allCountryData));
         saveAllData();
     }
@@ -97,7 +117,11 @@ public class StatsWorldActivity extends AppCompatActivity {
     private void saveAllData() {
         String allData = gson.toJson(allCountryData);
 
-        statsPreference.edit().putString(getString(R.string.pref_stats_global_data), allData).apply();
+        statsPreference.edit().putString(getString(R.string.pref_stats_global_data), allData)
+                .putInt(getString(R.string.pref_case_data_global_confirmed), confirmed)
+                .putInt(getString(R.string.pref_case_data_global_recovered), recovered)
+                .putInt(getString(R.string.pref_case_data_global_deaths), deaths)
+                .apply();
     }
 
     private void retrieveData() {
@@ -109,6 +133,10 @@ public class StatsWorldActivity extends AppCompatActivity {
             }.getType();
 
             allCountryData = gson.fromJson(allData, type);
+
+            confirmed = statsPreference.getInt(getString(R.string.pref_case_data_global_confirmed), 0);
+            recovered = statsPreference.getInt(getString(R.string.pref_case_data_global_recovered), 0);
+            deaths = statsPreference.getInt(getString(R.string.pref_case_data_global_deaths), 0);
 
             showStats();
         }

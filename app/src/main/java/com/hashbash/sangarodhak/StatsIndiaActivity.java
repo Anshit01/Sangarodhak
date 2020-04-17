@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,6 +36,14 @@ public class StatsIndiaActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ProgressBar progressBar;
 
+    private TextView confirmedTextView;
+    private TextView recoveredTextView;
+    private TextView deathsTextView;
+
+    private String confirmed;
+    private String recovered;
+    private String deaths;
+
     Gson gson = new Gson();
     SharedPreferences statsPreference;
 
@@ -45,6 +54,10 @@ public class StatsIndiaActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.loading);
         recyclerView = findViewById(R.id.recycler_view);
+
+        confirmedTextView = findViewById(R.id.india_total_confirmed);
+        recoveredTextView = findViewById(R.id.india_total_recovered);
+        deathsTextView = findViewById(R.id.india_total_deaths);
 
         statsPreference = getSharedPreferences(getString(R.string.pref_stats_data), MODE_PRIVATE);
 
@@ -62,6 +75,11 @@ public class StatsIndiaActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    JSONObject countryData = response.getJSONObject("data").getJSONObject("summary");
+                    confirmed = "" + countryData.getInt("total");
+                    recovered = "" + countryData.getInt("discharged");
+                    deaths = "" + countryData.getInt("deaths");
+
                     JSONArray statesData = response.getJSONObject("data").getJSONArray("regional");
                     int len = statesData.length();
                     allStates = new ArrayList<>();
@@ -89,6 +107,11 @@ public class StatsIndiaActivity extends AppCompatActivity {
 
     private void showStats() {
         progressBar.setVisibility(View.GONE);
+
+        confirmedTextView.setText(confirmed);
+        recoveredTextView.setText(recovered);
+        deathsTextView.setText(deaths);
+
         recyclerView.setAdapter(new CountryDataRecyclerAdapter(this, allStates));
         saveAllData();
     }
@@ -96,7 +119,11 @@ public class StatsIndiaActivity extends AppCompatActivity {
     private void saveAllData(){
         String allData = gson.toJson(allStates);
 
-        statsPreference.edit().putString(getString(R.string.pref_stats_country_data), allData).apply();
+        statsPreference.edit().putString(getString(R.string.pref_stats_country_data), allData)
+                .putString(getString(R.string.pref_case_data_country_total_cases), confirmed)
+                .putString(getString(R.string.pref_case_data_country_recovered), recovered)
+                .putString(getString(R.string.pref_case_data_country_dead), deaths)
+                .apply();
     }
 
     private void retrieveData(){
@@ -107,6 +134,10 @@ public class StatsIndiaActivity extends AppCompatActivity {
             Type type = new TypeToken< ArrayList < CountryCaseDataModal >>() {}.getType();
 
             allStates = gson.fromJson(allData, type);
+
+            confirmed = statsPreference.getString(getString(R.string.pref_case_data_country_total_cases), "0");
+            recovered = statsPreference.getString(getString(R.string.pref_case_data_country_recovered), "0");
+            deaths = statsPreference.getString(getString(R.string.pref_case_data_country_dead), "0");
 
             showStats();
         }
