@@ -13,6 +13,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <VideoView
+            android:id="@+id/notice_video"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"/>
+
         <ImageView
             android:id="@+id/notice_image"
             android:layout_width="match_parent"
@@ -26,6 +31,7 @@
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:text="From"
+            android:gravity="center_horizontal"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
