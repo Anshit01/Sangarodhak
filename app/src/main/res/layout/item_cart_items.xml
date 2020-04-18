@@ -84,15 +84,24 @@
                 android:id="@+id/button_add"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_margin="20dp"
+                android:layout_margin="10dp"
                 android:layout_weight="1"
+                android:src="@drawable/ic_add" />
+
+            <ImageView
+                android:id="@+id/button_remove"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:rotation="45"
                 android:src="@drawable/ic_add" />
 
             <ImageView
                 android:id="@+id/button_minus"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_margin="20dp"
+                android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:src="@drawable/ic_remove" />
 

@@ -13,11 +13,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <VideoView
-            android:id="@+id/notice_video"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"/>
-
         <ImageView
             android:id="@+id/notice_image"
             android:layout_width="match_parent"
@@ -39,6 +34,7 @@
         <TextView
             android:id="@+id/notice_text"
             android:layout_width="match_parent"
+            android:textColor="@color/black"
             android:layout_height="wrap_content"
             android:padding="10dp"
             tools:text="@tools:sample/lorem/random" />
