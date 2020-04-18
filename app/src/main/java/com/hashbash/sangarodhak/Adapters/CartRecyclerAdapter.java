@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -60,16 +59,22 @@ public class CartRecyclerAdapter extends RecyclerView.Adapter<CartRecyclerAdapte
         holder.itemView.findViewById(R.id.button_minus).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (thisItem.getQuantityBought() == 1) {
-                    allItems.remove(holder.getAdapterPosition());
-                    notifyItemRemoved(holder.getAdapterPosition());
-                } else
+                if (thisItem.getQuantityBought() > 1)
                     thisItem.setQuantityBought(thisItem.getQuantityBought() - 1);
                 holder.quantityBuy.setText(String.format("%d %s", thisItem.getQuantityBought(), thisItem.getQuantityType()));
                 holder.quantityPrice.setText(String.format("₹ %d", thisItem.getQuantityBought() * thisItem.getItemRate()));
                 FragmentSupplies.updateCartDetails();
             }
         });
+        holder.itemView.findViewById(R.id.button_remove).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                allItems.remove(holder.getAdapterPosition());
+                notifyItemRemoved(holder.getAdapterPosition());
+                FragmentSupplies.updateCartDetails();
+            }
+        });
+
     }
 
     @Override

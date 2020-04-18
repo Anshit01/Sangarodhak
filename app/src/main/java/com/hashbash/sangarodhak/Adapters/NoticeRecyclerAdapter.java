@@ -2,17 +2,13 @@ package com.hashbash.sangarodhak.Adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,24 +43,7 @@ public class NoticeRecyclerAdapter extends RecyclerView.Adapter<NoticeRecyclerAd
 
         NoticeDataModal thisNotice = allNotice.get(position);
 
-        if (!thisNotice.getImageLink().isEmpty())
-            Glide.with(context).load(thisNotice.getImageLink()).into(holder.noticeImage);
-        else
-            holder.noticeImage.setVisibility(View.GONE);
-
-        if (!thisNotice.getVideoLink().isEmpty()) {
-            holder.noticeVideo.setVideoURI(Uri.parse("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4"));
-            final MediaController mediaController = new MediaController(context);
-            mediaController.setAnchorView(holder.noticeVideo);
-            holder.noticeVideo.setMediaController(mediaController);
-            holder.noticeVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    holder.noticeVideo.start();
-                }
-            });
-        } else
-            holder.noticeVideo.setVisibility(View.GONE);
+        Glide.with(context).load(thisNotice.getImageLink()).into(holder.noticeImage);
 
         String normalText = thisNotice.getText();
         if (!normalText.isEmpty()) {
@@ -104,14 +83,12 @@ public class NoticeRecyclerAdapter extends RecyclerView.Adapter<NoticeRecyclerAd
     static class AnnouncementViewHolder extends RecyclerView.ViewHolder {
         ImageView noticeImage;
         TextView noticeFrom, noticeText;
-        VideoView noticeVideo;
 
         AnnouncementViewHolder(@NonNull View itemView) {
             super(itemView);
             noticeImage = itemView.findViewById(R.id.notice_image);
             noticeText = itemView.findViewById(R.id.notice_text);
             noticeFrom = itemView.findViewById((R.id.notice_from));
-            noticeVideo = itemView.findViewById(R.id.notice_video);
         }
     }
 }

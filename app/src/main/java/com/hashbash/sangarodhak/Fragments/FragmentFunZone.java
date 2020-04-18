@@ -67,6 +67,11 @@ public class FragmentFunZone extends Fragment {
                 "MiniGameActivity",
                 new String[]{"Tic Tac Toe"},
                 new String[]{"TicTacToe"}));
+        allFunItems.add(new FunZoneModal("Satisfying",
+                "MiniGameActivity",
+                new String[]{"Box Divider", "Cube Divider"},
+                new String[]{"BoxDivider", "CubeDivider"}));
+
 
         recyclerView.setAdapter(new FunZoneRecyclerAdapter(getContext(), allFunItems));
 

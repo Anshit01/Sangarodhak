@@ -43,6 +43,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.hashbash.sangarodhak.DashBoardActivity;
 import com.hashbash.sangarodhak.Modals.NoticeDataModal;
 import com.hashbash.sangarodhak.R;
 import com.hashbash.sangarodhak.StatsIndiaActivity;
@@ -428,6 +429,14 @@ public class FragmentHome extends Fragment implements LocationListener {
             ((TextView) view.findViewById(R.id.notice_text)).setText(temp.getText());
 
             Glide.with(getContext()).load(temp.getImageLink()).into((ImageView) view.findViewById(R.id.notice_image));
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DashBoardActivity.viewPage.setCurrentItem(0, true);
+                }
+            });
+
             bottomThingsContainer.addView(view);
 
         }
