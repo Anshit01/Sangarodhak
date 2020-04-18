@@ -15,6 +15,7 @@
     <!--Saved Data in Shared Preferences-->
     <string name="pref_case_data">team.hashbash.sangarodhak.case_data</string>
     <string name="pref_user_data">team.hashbash.sangarodhak.user_data</string>
+    <string name="pref_trivia_data">team.hashbash.sangrodhak.trivia_data</string>
 
     <!--District Data in Shared Preferences-->
     <string name="pref_case_data_district_name">PREF_DISTRICT_NAME</string>
@@ -71,6 +72,50 @@
         <item>Item2</item>
         <item>Item3</item>
         <item>Item4</item>
+    </string-array>
+
+    <!--Trivia-->
+    <string name="pref_trivia_previous_score">PREF_PREVIOUS_SCORE</string>
+    <string name="pref_trivia_highest_score">PREF_HIGHEST_SCORE</string>
+    <string-array name="trivia_questions_number_list">
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="trivia_category_list">
+        <item>Any Category</item>
+        <item>General Knowledge</item>
+        <item>Entertainment: Books</item>
+        <item>Entertainment: Film</item>
+        <item>Entertainment: Music</item>
+        <item>Entertainment: Musicals &amp; Theatres</item>
+        <item>Entertainment: Television</item>
+        <item>Entertainment: Video Games</item>
+        <item>Entertainment: Board Games</item>
+        <item>Science &amp; Nature</item>
+        <item>Science: Computers</item>
+        <item>Science: Mathematics</item>
+        <item>Mythology</item>
+        <item>Sports</item>
+        <item>Geography</item>
+        <item>History</item>
+        <item>Politics</item>
+        <item>Art</item>
+        <item>Celebrities</item>
+        <item>Animals</item>
+        <item>Vehicles</item>
+        <item>Entertainment: Comics</item>
+        <item>Science: Gadgets</item>
+        <item>Entertainment: Japanese Anime &amp; Manga</item>
+        <item>Entertainment: Cartoon &amp; Animations</item>
+    </string-array>
+
+    <string-array name="trivia_difficulty_list">
+        <item>Easy</item>
+        <item>Medium</item>
+        <item>Hard</item>
     </string-array>
 
 </resources>
