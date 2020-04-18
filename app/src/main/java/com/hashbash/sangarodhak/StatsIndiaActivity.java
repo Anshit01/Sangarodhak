@@ -4,7 +4,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +41,8 @@ public class StatsIndiaActivity extends AppCompatActivity {
     ProgressBar progressBar;
     Gson gson = new Gson();
     SharedPreferences statsPreference, caseDataPreference;
+
+    private Switch sortSwitch;
     private TextView confirmedTextView;
     private TextView recoveredTextView;
     private TextView deathsTextView;
@@ -54,6 +58,7 @@ public class StatsIndiaActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.loading);
         recyclerView = findViewById(R.id.recycler_view);
 
+        sortSwitch = findViewById(R.id.sort_switch);
         confirmedTextView = findViewById(R.id.india_total_confirmed);
         recoveredTextView = findViewById(R.id.india_total_recovered);
         deathsTextView = findViewById(R.id.india_total_deaths);
@@ -62,6 +67,13 @@ public class StatsIndiaActivity extends AppCompatActivity {
         caseDataPreference = getSharedPreferences(getString(R.string.pref_case_data), MODE_PRIVATE);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        sortSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                showStats();
+            }
+        });
 
         retrieveData();
 
@@ -140,15 +152,26 @@ public class StatsIndiaActivity extends AppCompatActivity {
 
     }
 
-    private void sortArrayList(){
-        allStates.sort(new SortStatesByCofirmedCases());
+    private void sortArrayList() {
+        if (sortSwitch.isChecked()) {
+            allStates.sort(new SortStatesByCofirmedCases());
+        }
+        else {
+            allStates.sort(new SortStatesByName());
+        }
     }
-
 }
 
 class SortStatesByCofirmedCases implements Comparator<CountryCaseDataModal>
 {
     public int compare(CountryCaseDataModal a, CountryCaseDataModal b){
         return Integer.parseInt(b.getTotalCases()) - Integer.parseInt(a.getTotalCases());
+    }
+}
+
+class SortStatesByName implements Comparator<CountryCaseDataModal>
+{
+    public int compare(CountryCaseDataModal a, CountryCaseDataModal b){
+        return a.getStateName().compareTo(b.getStateName());
     }
 }
