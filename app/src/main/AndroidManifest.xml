@@ -18,6 +18,8 @@
         <activity android:name=".TriviaQuestionActivity" />
         <activity android:name=".TriviaActivity" />
         <activity android:name=".StatsStateActivity" />
+        <activity android:name=".MiniGameActivity" />
+        <activity android:name=".StatsStateActivity" />
         <activity android:name=".StatsIndiaActivity" />
         <activity android:name=".StatsWorldActivity" />
         <activity
