@@ -2,6 +2,7 @@ package com.hashbash.sangarodhak.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,9 +47,11 @@ public class FunZoneRecyclerAdapter extends RecyclerView.Adapter<FunZoneRecycler
         holder.arrowIcon.setRotation(thisItem.isExpanded() ? 180 : 0);
         holder.expandableLayout.setVisibility(thisItem.isExpanded() ? View.VISIBLE : View.GONE);
 
+        holder.expandableLayout.removeAllViews();
+
         for (i = 0; i < thisItem.getSubItems().length; i++) {
             final int temp = i;
-            View view = LayoutInflater.from(context).inflate(R.layout.item_fun_zone_expanded_item, holder.titleContainer, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.item_fun_zone_expanded_item, null);
             ((TextView) view.findViewById(R.id.object_name)).setText(thisItem.getSubItems()[temp]);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -99,6 +102,7 @@ public class FunZoneRecyclerAdapter extends RecyclerView.Adapter<FunZoneRecycler
                     thisCountry.setExpanded(!thisCountry.isExpanded());
 
                     notifyItemChanged(position);
+
                 }
             });
 
