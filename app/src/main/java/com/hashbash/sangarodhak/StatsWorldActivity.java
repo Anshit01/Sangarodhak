@@ -4,7 +4,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +30,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class StatsWorldActivity extends AppCompatActivity {
 
@@ -36,6 +39,8 @@ public class StatsWorldActivity extends AppCompatActivity {
     RecyclerView recyclerView;
 
     ProgressBar progressBar;
+
+    Switch sortSwitch;
 
     private TextView confirmedTextView;
     private TextView recoveredTextView;
@@ -53,6 +58,7 @@ public class StatsWorldActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.loading);
         recyclerView = findViewById(R.id.recycler_view);
+        sortSwitch = findViewById(R.id.sort_switch);
 
         confirmedTextView = findViewById(R.id.global_total_confirmed);
         recoveredTextView = findViewById(R.id.global_total_recovered);
@@ -62,6 +68,13 @@ public class StatsWorldActivity extends AppCompatActivity {
         caseDataPreference = getSharedPreferences(getString(R.string.pref_case_data), MODE_PRIVATE);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        sortSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                showStats();
+            }
+        });
 
         retrieveData();
 
@@ -102,9 +115,10 @@ public class StatsWorldActivity extends AppCompatActivity {
 
     private void showStats() {
         progressBar.setVisibility(View.GONE);
-        confirmedTextView.setText(confirmed);
-        recoveredTextView.setText(recovered);
-        deathsTextView.setText(deaths);
+        confirmedTextView.setText("" + confirmed);
+        recoveredTextView.setText("" + recovered);
+        deathsTextView.setText("" + deaths);
+        sortArrayList();
         recyclerView.setAdapter(new GlobalDataRecyclerAdapter(this, allCountryData));
         saveAllData();
     }
@@ -132,5 +146,29 @@ public class StatsWorldActivity extends AppCompatActivity {
             showStats();
         }
 
+    }
+
+    private void sortArrayList(){
+        if(sortSwitch.isChecked()) {
+            allCountryData.sort(new SortCountriesByConfirmedCases());
+        }
+        else{
+            allCountryData.sort(new SortCountriesByName());
+        }
+    }
+
+}
+
+class SortCountriesByConfirmedCases implements Comparator<GlobalCaseDataModal>
+{
+    public int compare(GlobalCaseDataModal a, GlobalCaseDataModal b){
+        return Integer.parseInt(b.getTotalCases()) - Integer.parseInt(a.getTotalCases());
+    }
+}
+
+class SortCountriesByName implements Comparator<GlobalCaseDataModal>
+{
+    public int compare(GlobalCaseDataModal a, GlobalCaseDataModal b){
+        return a.getCountryName().compareTo(b.getCountryName());
     }
 }

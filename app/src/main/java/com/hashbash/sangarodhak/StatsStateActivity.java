@@ -4,7 +4,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +22,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hashbash.sangarodhak.Adapters.StateDataRecyclerAdapter;
+import com.hashbash.sangarodhak.Modals.CountryCaseDataModal;
 import com.hashbash.sangarodhak.Modals.GlobalCaseDataModal;
 import com.hashbash.sangarodhak.Modals.StateCaseDataModal;
 
@@ -29,6 +32,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class StatsStateActivity extends AppCompatActivity {
 
@@ -39,6 +43,7 @@ public class StatsStateActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ProgressBar progressBar;
 
+    private Switch sortSwitch;
     private TextView confirmedTextView;
     private TextView recoveredTextView;
     private TextView deathsTextView;
@@ -58,6 +63,7 @@ public class StatsStateActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.loading);
         recyclerView = findViewById(R.id.recycler_view);
 
+        sortSwitch = findViewById(R.id.sort_switch);
         confirmedTextView = findViewById(R.id.state_total_confirmed);
         recoveredTextView = findViewById(R.id.state_total_recovered);
         deathsTextView = findViewById(R.id.state_total_deaths);
@@ -67,6 +73,12 @@ public class StatsStateActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        sortSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                showStats();
+            }
+        });
 
         if (savedInstanceState != null) {
             state = savedInstanceState.getString("state");
@@ -114,6 +126,7 @@ public class StatsStateActivity extends AppCompatActivity {
         confirmedTextView.setText(confirmed);
         recoveredTextView.setText(recovered);
         deathsTextView.setText(deaths);
+        sortArrayList();
         recyclerView.setAdapter(new StateDataRecyclerAdapter(this, allDistricts));
         saveAllData();
     }
@@ -143,4 +156,27 @@ public class StatsStateActivity extends AppCompatActivity {
 
     }
 
+    private void sortArrayList() {
+        if (sortSwitch.isChecked()){
+            allDistricts.sort(new SortDistrictsByCofirmedCases());
+        }
+        else {
+            allDistricts.sort(new SortDistrictsByName());
+        }
+    }
+
+}
+
+class SortDistrictsByCofirmedCases implements Comparator<StateCaseDataModal>
+{
+    public int compare(StateCaseDataModal a, StateCaseDataModal b){
+        return Integer.parseInt(b.getTotalCases()) - Integer.parseInt(a.getTotalCases());
+    }
+}
+
+class SortDistrictsByName implements Comparator<StateCaseDataModal>
+{
+    public int compare(StateCaseDataModal a, StateCaseDataModal b){
+        return a.getDistrictName().compareTo(b.getDistrictName());
+    }
 }
