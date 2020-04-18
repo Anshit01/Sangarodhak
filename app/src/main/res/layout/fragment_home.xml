@@ -422,6 +422,7 @@
         app:shape_roundRect_topRightRadius="20dp">
 
         <LinearLayout
+            android:id="@+id/home_bottom"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:behavior_peekHeight="auto"

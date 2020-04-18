@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,6 +31,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationRequest;
@@ -39,6 +41,9 @@ import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.hashbash.sangarodhak.Modals.NoticeDataModal;
 import com.hashbash.sangarodhak.R;
 import com.hashbash.sangarodhak.StatsIndiaActivity;
 import com.hashbash.sangarodhak.StatsStateActivity;
@@ -49,10 +54,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static android.content.Context.MODE_PRIVATE;
 
 public class FragmentHome extends Fragment implements LocationListener {
 
@@ -72,11 +80,14 @@ public class FragmentHome extends Fragment implements LocationListener {
     private LinearLayout globalStatsLinearLayout;
     private LinearLayout countryStatsLinearLayout;
     private LinearLayout stateStatsLinearLayout;
+    private LinearLayout bottomThingsContainer;
 
     private LocationManager manager;
     private Geocoder geocoder;
     private List<Address> addresses;
-    private SharedPreferences preferences;
+    private SharedPreferences preferences, statsPreference;
+
+    private Gson gson = new Gson();
 
     public FragmentHome() {
     }
@@ -87,6 +98,7 @@ public class FragmentHome extends Fragment implements LocationListener {
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         preferences = getActivity().getSharedPreferences(getString(R.string.pref_case_data), Context.MODE_PRIVATE);
+        statsPreference = getActivity().getSharedPreferences(getString(R.string.pref_stats_data), MODE_PRIVATE);
 
         state[0] = view.findViewById(R.id.state_name);
         state[1] = view.findViewById(R.id.state_total_cases);
@@ -103,6 +115,7 @@ public class FragmentHome extends Fragment implements LocationListener {
         globalConfirmedTextView = view.findViewById(R.id.global_confirmed);
         globalRecoveredTextView = view.findViewById(R.id.global_recovered);
         globalDeathsTextView = view.findViewById(R.id.global_deaths);
+        bottomThingsContainer = view.findViewById(R.id.home_bottom);
 
         globalStatsLinearLayout = view.findViewById(R.id.global_stats_layout);
         countryStatsLinearLayout = view.findViewById(R.id.country_stats_layout);
@@ -134,6 +147,7 @@ public class FragmentHome extends Fragment implements LocationListener {
 
         getSharedPreferenceData();
         setGlobalData();
+        showBottomThings();
 
         manager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
         geocoder = new Geocoder(getContext(), Locale.getDefault());
@@ -396,5 +410,26 @@ public class FragmentHome extends Fragment implements LocationListener {
                 }
             }
         });
+    }
+
+    private void showBottomThings() {
+
+        String allNoticeData = statsPreference.getString(getString(R.string.pref_stats_notice_data), "[]");
+
+        if (!allNoticeData.equals("[]")) {
+            Type type = new TypeToken<ArrayList<NoticeDataModal>>() {
+            }.getType();
+
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.item_notice_feed, bottomThingsContainer, false);
+
+            NoticeDataModal temp = ((ArrayList<NoticeDataModal>) gson.fromJson(allNoticeData, type)).get(0);
+
+            ((TextView) view.findViewById(R.id.notice_from)).setText(temp.getFrom());
+            ((TextView) view.findViewById(R.id.notice_text)).setText(temp.getText());
+
+            Glide.with(getContext()).load(temp.getImageLink()).into((ImageView) view.findViewById(R.id.notice_image));
+            bottomThingsContainer.addView(view);
+
+        }
     }
 }
