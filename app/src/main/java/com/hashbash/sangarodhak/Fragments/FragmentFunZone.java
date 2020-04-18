@@ -1,6 +1,7 @@
 package com.hashbash.sangarodhak.Fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,16 +9,49 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.hashbash.sangarodhak.Adapters.FunZoneRecyclerAdapter;
+import com.hashbash.sangarodhak.Modals.FunZoneModal;
 import com.hashbash.sangarodhak.R;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+
+import dalvik.system.DexFile;
+
 public class FragmentFunZone extends Fragment {
+
+    private RecyclerView recyclerView;
+    private ArrayList<FunZoneModal> allFunItems = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_fun_zone, container, false);
+
+        recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+//        try {
+//            DexFile df = new DexFile(getContext().getPackageCodePath());
+//            for (Enumeration<String> iter = df.entries(); iter.hasMoreElements();) {
+//                String s = iter.nextElement();
+//                Log.d("FunZone", s);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        allFunItems.add(new FunZoneModal("Mini Games",
+                "MiniGameActivity",
+                new String[]{"Tic Tac Toe"},
+                new String[]{"TicTacToe"}));
+
+        recyclerView.setAdapter(new FunZoneRecyclerAdapter(getContext(), allFunItems));
 
         return view;
     }
