@@ -82,7 +82,7 @@ public class FragmentFunZone extends Fragment {
                 new String[]{"Square Divider", "Cube Divider", "Pattern Drawing", "Circle Pattern Drawing"},
                 new String[]{"BoxDivider", "CubeDivider", "Pattern", "CirclePattern"}));
         allFunItems.add(new FunZoneModal("Trivia Quiz",
-                "TriviaQuestionActivity",
+                "TriviaActivity",
                 new String[]{"" + allFunItemsImageLinks.get("Trivia")},
                 new String[]{"MCQs"},
                 new String[]{"Trivia"}));
