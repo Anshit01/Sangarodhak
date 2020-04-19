@@ -71,6 +71,7 @@ public class FragmentHome extends Fragment implements LocationListener {
     private TextView globalConfirmedTextView;
     private TextView globalRecoveredTextView;
     private TextView globalDeathsTextView;
+    private TextView districtStatusTextView;
 
     private LinearLayout globalStatsLinearLayout;
     private LinearLayout countryStatsLinearLayout;
@@ -110,6 +111,7 @@ public class FragmentHome extends Fragment implements LocationListener {
         globalConfirmedTextView = view.findViewById(R.id.global_confirmed);
         globalRecoveredTextView = view.findViewById(R.id.global_recovered);
         globalDeathsTextView = view.findViewById(R.id.global_deaths);
+        districtStatusTextView = view.findViewById(R.id.district_status);
         bottomThingsContainer = view.findViewById(R.id.home_bottom);
 
         globalStatsLinearLayout = view.findViewById(R.id.global_stats_layout);
@@ -174,6 +176,17 @@ public class FragmentHome extends Fragment implements LocationListener {
         globalRecoveredTextView.setText(preferences.getString(getActivity().getString(R.string.pref_case_data_global_recovered), "0"));
         globalDeathsTextView.setText(preferences.getString(getActivity().getString(R.string.pref_case_data_global_deaths), "0"));
 
+        String districtName = preferences.getString(getString(R.string.pref_case_data_district_name), null);
+        int districtConfirmed = preferences.getInt(getString(R.string.pref_case_data_district_confirmed), -1);
+        if(districtName != null && districtConfirmed != -1) {
+
+            if(districtConfirmed == 0){
+                districtStatusTextView.setText("No cases in " + districtName + ". You are currently in the safe zone!");
+            }
+            else{
+                districtStatusTextView.setText("Total cases in " + districtName + ": " + districtConfirmed);
+            }
+        }
     }
 
 
@@ -305,9 +318,12 @@ public class FragmentHome extends Fragment implements LocationListener {
                         int confirmed = districtsData.getJSONObject(district).getInt("confirmed");
                         preferences.edit().putInt(getString(R.string.pref_case_data_district_confirmed), confirmed).apply();
                         Log.d("log", "Cases in " + district + ": " + confirmed);
+                        districtStatusTextView.setText("Total cases in " + district + ": " + confirmed);
                         //TODO
                     } else {
                         //TODO
+                        districtStatusTextView.setText("No cases in " + district + ". You are currently in the safe zone!");
+                        preferences.edit().putInt(getString(R.string.pref_case_data_district_confirmed), 0).apply();
                         Log.d("log", "No cases in " + district + "!");
                     }
                 } catch (JSONException e) {
@@ -331,11 +347,12 @@ public class FragmentHome extends Fragment implements LocationListener {
             public void run() {
                 try {
                     addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                    preferences.edit().putString(getString(R.string.pref_case_data_district_name), addresses.get(0).getSubAdminArea()).apply();
                     Log.d("Home", "Address Received\n" + addresses);
                     countryName = addresses.get(0).getCountryName();
                     stateName = addresses.get(0).getAdminArea();
+                    preferences.edit().putString(getString(R.string.pref_case_data_state_name), stateName).apply();
                     setData(stateName, countryName);
-                    preferences.edit().putString(getString(R.string.pref_case_data_district_name), addresses.get(0).getSubAdminArea()).apply();
                     setDistrictData();
                 } catch (IOException e) {
                     e.printStackTrace();
