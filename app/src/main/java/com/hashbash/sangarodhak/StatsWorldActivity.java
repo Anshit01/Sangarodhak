@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 
 public class StatsWorldActivity extends AppCompatActivity {
@@ -150,10 +151,10 @@ public class StatsWorldActivity extends AppCompatActivity {
 
     private void sortArrayList(){
         if(sortSwitch.isChecked()) {
-            allCountryData.sort(new SortCountriesByConfirmedCases());
+            Collections.sort(allCountryData, new SortCountriesByConfirmedCases());
         }
         else{
-            allCountryData.sort(new SortCountriesByName());
+            Collections.sort(allCountryData, new SortCountriesByName());
         }
     }
 

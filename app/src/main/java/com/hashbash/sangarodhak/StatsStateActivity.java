@@ -32,6 +32,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 
 public class StatsStateActivity extends AppCompatActivity {
@@ -158,10 +159,10 @@ public class StatsStateActivity extends AppCompatActivity {
 
     private void sortArrayList() {
         if (sortSwitch.isChecked()){
-            allDistricts.sort(new SortDistrictsByCofirmedCases());
+            Collections.sort(allDistricts, new SortDistrictsByCofirmedCases());
         }
         else {
-            allDistricts.sort(new SortDistrictsByName());
+            Collections.sort(allDistricts, new SortDistrictsByName());
         }
     }
 
