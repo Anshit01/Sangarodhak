@@ -31,6 +31,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hashbash.sangarodhak.DashBoardActivity;
@@ -138,6 +142,7 @@ public class FragmentHome extends Fragment implements LocationListener {
 
         getSharedPreferenceData();
         setGlobalData();
+        getNoticeData();
         showBottomThings();
 
         manager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
@@ -315,6 +320,7 @@ public class FragmentHome extends Fragment implements LocationListener {
 
             }
         });
+        queue.add(request);
     }
 
     @Override
@@ -352,6 +358,25 @@ public class FragmentHome extends Fragment implements LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
         Log.d("Home", provider + " Disabled");
+    }
+
+    private void getNoticeData() {
+        FirebaseDatabase.getInstance().getReference("notice").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<NoticeDataModal> allNotice = new ArrayList<>();
+                for (int i = (int) dataSnapshot.getChildrenCount() - 1; i >= 0; i--)
+                    allNotice.add(new NoticeDataModal((String) dataSnapshot.child("" + i).child("image").getValue(), (String) dataSnapshot.child("" + i).child("from").getValue(), (String) dataSnapshot.child("" + i).child("text").getValue(), (String) dataSnapshot.child("" + i).child("video").getValue()));
+                String allData = gson.toJson(allNotice);
+
+                statsPreference.edit().putString(getString(R.string.pref_stats_notice_data), allData).apply();
+                showBottomThings();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
     private void showBottomThings() {
