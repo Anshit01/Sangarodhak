@@ -1,12 +1,16 @@
 package team.hashbash.sangarodhak.Fragments;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,13 +19,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+
 import team.hashbash.sangarodhak.Adapters.CartRecyclerAdapter;
 import team.hashbash.sangarodhak.Adapters.SuppliesRecyclerAdapter;
 import team.hashbash.sangarodhak.Modals.SupplyItemsDataModal;
 import team.hashbash.sangarodhak.R;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
 
 public class FragmentSupplies extends Fragment {
 
@@ -29,6 +40,7 @@ public class FragmentSupplies extends Fragment {
     public static ArrayList<SupplyItemsDataModal> allItemsAvailable = new ArrayList<>(), allItemsAddedInCart = new ArrayList<>();
     private static TextView checkoutAmount, noOfItems;
     private static Context context;
+    Button checkout;
     private LinearLayout cartLayout, viewCartView;
     private BottomSheetBehavior bottomSheetBehavior;
 
@@ -68,6 +80,7 @@ public class FragmentSupplies extends Fragment {
         viewCartView = view.findViewById(R.id.view_cart_view);
         cartLayout = view.findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(cartLayout);
+        checkout = view.findViewById(R.id.button_checkout);
 
         checkoutAmount = view.findViewById(R.id.total_amount_to_pay);
         noOfItems = view.findViewById(R.id.total_items_in_cart);
@@ -87,6 +100,16 @@ public class FragmentSupplies extends Fragment {
             }
         });
 
+        checkout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (allItemsAddedInCart.size() != 0)
+                    buyItems();
+                else
+                    Toast.makeText(getContext(), "Empty Cart", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         allItemsAvailable.add(new SupplyItemsDataModal("Potato", "Kg", 50, 30));
         allItemsAvailable.add(new SupplyItemsDataModal("Onion", "Kg", 30, 50));
         allItemsAvailable.add(new SupplyItemsDataModal("Sugar", "Kg", 50, 35));
@@ -102,4 +125,25 @@ public class FragmentSupplies extends Fragment {
 
         return view;
     }
+
+    private void buyItems(){
+        final DatabaseReference cartReference = FirebaseDatabase.getInstance().getReference(Build.BOARD + "");
+
+        cartReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                cartReference.child(dataSnapshot.getChildrenCount()+"").setValue(allItemsAddedInCart);
+                allItemsAddedInCart = new ArrayList<>();
+                updateCartDetails();
+                Toast.makeText(getContext(), "Order Placed", Toast.LENGTH_SHORT).show();
+                cartRecyclerView.setAdapter(new CartRecyclerAdapter(getContext(), allItemsAddedInCart));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 }

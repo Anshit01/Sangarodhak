@@ -40,7 +40,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         manager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if (manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            if (manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) || manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -56,7 +56,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 askGPSTurnOn();
             }
         } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, GET_LOCATION);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, GET_LOCATION);
         }
     }
 

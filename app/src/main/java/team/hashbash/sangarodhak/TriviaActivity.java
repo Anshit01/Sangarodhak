@@ -262,7 +262,6 @@ public class TriviaActivity extends AppCompatActivity {
             String score = "Score: " + correctAnswers + "/" + questionsLength + "\n";
             if (correctAnswers * (60 / questionsLength) >= bestCorrect * (60 / bestTotal)) {
                 preferences.edit().putString(getString(R.string.pref_trivia_highest_score), correctAnswers + "/" + questionsLength).apply();
-//                ((TextView)dialogTriviaResult.findViewById(R.id.trivia_score)).setText("Score: " + correctAnswers + "/" + questionsLength + "\bBest Score: " );
                 score += "Best Score: " + correctAnswers + "/" + questionsLength;
             } else
                 score += "Best Score: " + bestCorrect + "/" + bestTotal;
