@@ -403,7 +403,16 @@ public class FragmentHome extends Fragment implements LocationListener {
                 }
             });
 
+            bottomThingsContainer.removeAllViews();
             bottomThingsContainer.addView(view);
+            View donateView = LayoutInflater.from(getContext()).inflate(R.layout.item_home_donate_view, bottomThingsContainer, false);
+            donateView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DashBoardActivity.viewPage.setCurrentItem(4, true);
+                }
+            });
+            bottomThingsContainer.addView(donateView);
 
         }
     }
