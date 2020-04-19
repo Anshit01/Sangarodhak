@@ -1,6 +1,7 @@
 package com.hashbash.sangarodhak;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -29,7 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class TriviaQuestionActivity extends AppCompatActivity {
+public class TriviaActivity extends AppCompatActivity {
 
     Dialog dialogTrivia, dialogTriviaResult;
     ProgressBar progressBar;
@@ -43,14 +44,20 @@ public class TriviaQuestionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_trivia_question);
+        setContentView(R.layout.activity_trivia);
 
         progressBar = findViewById(R.id.progress_bar);
 
         dialogTrivia = new Dialog(this);
         dialogTrivia.setContentView(R.layout.dialog_trivia);
         dialogTrivia.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialogTrivia.setCancelable(false);
+
+        dialogTrivia.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                finish();
+            }
+        });
 
         dialogTrivia.findViewById(R.id.button_start).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +76,13 @@ public class TriviaQuestionActivity extends AppCompatActivity {
         dialogTriviaResult = new Dialog(this);
         dialogTriviaResult.setContentView(R.layout.dialog_trivia_result);
         dialogTriviaResult.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialogTriviaResult.setCancelable(false);
+
+        dialogTriviaResult.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                finish();
+            }
+        });
 
         dialogTriviaResult.findViewById(R.id.trivia_close_button).setOnClickListener(new View.OnClickListener() {
             @Override

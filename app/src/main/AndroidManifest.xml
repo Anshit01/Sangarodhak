@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TriviaQuestionActivity"
+        <activity android:name=".TriviaActivity"
             android:theme="@style/StatusColorAccent"/>
         <activity android:name=".StatsStateActivity" />
         <activity android:name=".MiniGameActivity" />
