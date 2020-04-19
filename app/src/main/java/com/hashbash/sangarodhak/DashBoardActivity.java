@@ -32,8 +32,6 @@ import java.util.ArrayList;
 
 public class DashBoardActivity extends AppCompatActivity {
 
-    final int GET_LOCATION = 12;
-
     public static ViewPager viewPage;
     public static PagerAdapter adapter;
 
@@ -50,8 +48,6 @@ public class DashBoardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_dash_board);
-
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, GET_LOCATION);
 
         final ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new FragmentNotice());
@@ -159,19 +155,6 @@ public class DashBoardActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == GET_LOCATION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-            } else {
-                Toast.makeText(getApplicationContext(), "Give required permission", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         final ArrayList<Fragment> fragments = new ArrayList<>();
@@ -182,26 +165,6 @@ public class DashBoardActivity extends AppCompatActivity {
         fragments.add(new FragmentFunZone());
 
         adapter = new SlidePageAdapter(getSupportFragmentManager(), fragments);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LocationRequest.PRIORITY_HIGH_ACCURACY) {
-            switch (resultCode) {
-                case Activity.RESULT_OK:
-                    // All required changes were successfully made
-                    Log.i("DashBoard", "onActivityResult: GPS Enabled by user");
-                    break;
-                case Activity.RESULT_CANCELED:
-                    // The user was asked to change settings, but chose not to
-                    Log.i("DashBoard", "onActivityResult: User rejected GPS request");
-                    Toast.makeText(getApplicationContext(), "Displaying Saved Data", Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 
 }
