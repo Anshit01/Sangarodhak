@@ -2,14 +2,15 @@ package com.hashbash.sangarodhak.Modals;
 
 public class FunZoneModal {
     private String title, activityToOpen;
-    private String[] subItems, activityExtra;
+    private String[] subItems, activityExtra, imageLink;
     private boolean isExpanded = false;
 
-    public FunZoneModal(String title, String activityToOpen, String[] subItems, String[] activityExtra) {
+    public FunZoneModal(String title, String activityToOpen, String[] imageLink, String[] subItems, String[] activityExtra) {
         this.title = title;
         this.activityToOpen = activityToOpen;
         this.subItems = subItems;
         this.activityExtra = activityExtra;
+        this.imageLink = imageLink;
     }
 
     public String getTitle() {
@@ -26,6 +27,10 @@ public class FunZoneModal {
 
     public String[] getActivityExtra() {
         return activityExtra;
+    }
+
+    public String[] getImageLink() {
+        return imageLink;
     }
 
     public boolean isExpanded() {
