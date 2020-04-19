@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginVertical="5dp"
     android:elevation="8dp"
     app:cardBackgroundColor="@color/colorAccent"
     app:cardUseCompatPadding="true"
@@ -36,7 +37,7 @@
             android:paddingBottom="10dp"
             android:text="Donate now >"
             android:gravity="center_horizontal"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold|italic" />
 
