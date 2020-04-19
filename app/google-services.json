@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:61806007240:android:492564da1a98bc9b2526fd",
         "android_client_info": {
-          "package_name": "com.hashbash.sangarodhak"
+          "package_name": "team.hashbash.sangarodhak"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "61806007240-sjv5cmvaqnpdkn2sco4d0n8kdbl8h0o5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.hashbash.sangarodhak",
+            "package_name": "team.hashbash.sangarodhak",
             "certificate_hash": "3e74d27401496065c48c1cdea57c3f4e2592b675"
           }
         },

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.hashbash.sangarodhak">
+    package="team.hashbash.sangarodhak">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,8 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TriviaActivity"
-            android:theme="@style/StatusColorAccent"/>
+        <activity
+            android:name=".TriviaActivity"
+            android:theme="@style/StatusColorAccent" />
         <activity android:name=".StatsStateActivity" />
         <activity android:name=".MiniGameActivity" />
         <activity android:name=".StatsIndiaActivity" />

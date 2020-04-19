@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".StatsIndiaActivity">
+    tools:context="team.hashbash.sangarodhak.StatsIndiaActivity">
 
     <LinearLayout
         android:id="@+id/global_stats_layout"
