@@ -2,6 +2,8 @@ package com.hashbash.sangarodhak.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +13,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.hashbash.sangarodhak.Modals.FunZoneModal;
 import com.hashbash.sangarodhak.R;
 
@@ -51,8 +58,9 @@ public class FunZoneRecyclerAdapter extends RecyclerView.Adapter<FunZoneRecycler
 
         for (i = 0; i < thisItem.getSubItems().length; i++) {
             final int temp = i;
-            View view = LayoutInflater.from(context).inflate(R.layout.item_fun_zone_expanded_item, null);
+            final View view = LayoutInflater.from(context).inflate(R.layout.item_fun_zone_expanded_item, null);
             ((TextView) view.findViewById(R.id.object_name)).setText(thisItem.getSubItems()[temp]);
+            Glide.with(context).load(thisItem.getImageLink()[temp]).into((ImageView)view.findViewById(R.id.object_image));
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -68,6 +76,11 @@ public class FunZoneRecyclerAdapter extends RecyclerView.Adapter<FunZoneRecycler
                 }
             });
             holder.expandableLayout.addView(view);
+            if(i + 1 < thisItem.getSubItems().length ){
+                LinearLayout ll = new LinearLayout(context);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 10);
+                holder.expandableLayout.addView(ll, params);
+            }
         }
     }
 

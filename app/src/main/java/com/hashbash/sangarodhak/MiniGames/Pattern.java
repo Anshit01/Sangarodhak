@@ -50,8 +50,8 @@ public class Pattern extends PApplet {
 
         //  r1 = 400*cos(a1 - a2) + 50*sin(a1 - a2) ;
 
-        x1 = a * cos(1 * (a1));
-        y1 = b * sin(5 * (a1));
+        x1 = a * cos(1 * (a1-a2));
+        y1 = b * sin(5 * (a1-a2));
 
         stroke(255);
         strokeWeight(1);
