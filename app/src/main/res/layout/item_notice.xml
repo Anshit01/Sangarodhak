@@ -36,6 +36,8 @@
             android:layout_width="match_parent"
             android:textColor="@color/black"
             android:layout_height="wrap_content"
+            android:linksClickable="true"
+            android:autoLink="all"
             android:padding="10dp"
             tools:text="@tools:sample/lorem/random" />
 

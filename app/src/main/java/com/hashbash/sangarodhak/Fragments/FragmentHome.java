@@ -3,7 +3,6 @@ package com.hashbash.sangarodhak.Fragments;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -32,15 +31,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hashbash.sangarodhak.DashBoardActivity;
@@ -155,10 +145,7 @@ public class FragmentHome extends Fragment implements LocationListener {
 
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60 * 1000, 50, this);
-            if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 50, this);
-            } else
-                askGPSTurnOn();
+            manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 50, this);
         } else
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, GET_LOCATION);
 
@@ -365,52 +352,6 @@ public class FragmentHome extends Fragment implements LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
         Log.d("Home", provider + " Disabled");
-    }
-
-    private void askGPSTurnOn() {
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest);
-
-        Task<LocationSettingsResponse> result =
-                LocationServices.getSettingsClient(getActivity()).checkLocationSettings(builder.build());
-
-
-        result.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
-            @Override
-            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
-                try {
-                    LocationSettingsResponse response = task.getResult(ApiException.class);
-                    // All location settings are satisfied. The client can initialize location
-                    // requests here.
-                } catch (ApiException exception) {
-                    switch (exception.getStatusCode()) {
-                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                            // Location settings are not satisfied. But could be fixed by showing the
-                            // user a dialog.
-                            try {
-                                // Cast to a resolvable exception.
-                                ResolvableApiException resolvable = (ResolvableApiException) exception;
-                                // Show the dialog by calling startResolutionForResult(),
-                                // and check the result in onActivityResult().
-                                resolvable.startResolutionForResult(
-                                        getActivity(),
-                                        LocationRequest.PRIORITY_HIGH_ACCURACY);
-                            } catch (IntentSender.SendIntentException e) {
-                                // Ignore the error.
-                            } catch (ClassCastException e) {
-                                // Ignore, should be an impossible error.
-                            }
-                            break;
-                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                            // Location settings are not satisfied. However, we have no way to fix the
-                            // settings so we won't show the dialog.
-                            break;
-                    }
-                }
-            }
-        });
     }
 
     private void showBottomThings() {

@@ -51,8 +51,8 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:shadowColor="@color/grey_800"
-                        android:shadowDy="2"
                         android:shadowDx="1"
+                        android:shadowDy="2"
                         android:text="Confirmed"
                         android:textColor="@color/black" />
 
@@ -153,9 +153,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingBottom="10dp"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="10dp">
 
             <TextView
                 android:id="@+id/state_name"
@@ -287,10 +287,10 @@
             android:id="@+id/country_stats_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:paddingBottom="10dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="10dp">
 
             <TextView
                 android:id="@+id/country_name"
@@ -421,17 +421,19 @@
         app:shape_roundRect_topLeftRadius="20dp"
         app:shape_roundRect_topRightRadius="20dp">
 
-        <LinearLayout
-            android:id="@+id/home_bottom"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:behavior_peekHeight="auto"
-            android:orientation="vertical"
-            app:layout_behavior="@string/bottom_sheet_behavior"
-            android:background="@color/white">
+            android:background="@color/grey_50"
+            android:layout_height="match_parent">
 
+            <LinearLayout
+                android:id="@+id/home_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/grey_50"
+                android:orientation="vertical"/>
 
-        </LinearLayout>
+        </ScrollView>
 
     </com.github.florent37.shapeofview.shapes.RoundRectView>
 
