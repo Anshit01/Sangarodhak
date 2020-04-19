@@ -31,6 +31,8 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 
 public class StatsIndiaActivity extends AppCompatActivity {
@@ -154,15 +156,15 @@ public class StatsIndiaActivity extends AppCompatActivity {
 
     private void sortArrayList() {
         if (sortSwitch.isChecked()) {
-            allStates.sort(new SortStatesByCofirmedCases());
+            Collections.sort(allStates, new SortStatesByConfirmedCases());
         }
         else {
-            allStates.sort(new SortStatesByName());
+            Collections.sort(allStates, new SortStatesByName());
         }
     }
 }
 
-class SortStatesByCofirmedCases implements Comparator<CountryCaseDataModal>
+class SortStatesByConfirmedCases implements Comparator<CountryCaseDataModal>
 {
     public int compare(CountryCaseDataModal a, CountryCaseDataModal b){
         return Integer.parseInt(b.getTotalCases()) - Integer.parseInt(a.getTotalCases());
