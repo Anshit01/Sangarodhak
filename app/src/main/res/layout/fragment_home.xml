@@ -427,14 +427,33 @@
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/home_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/grey_50"
                 android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/district_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Loading..."
+                    android:textColor="@color/white"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/rounded_corner_background"
+
+                    android:padding="10dp"
+                    />
 
 
+                <LinearLayout
+                    android:id="@+id/home_bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/grey_50"
+                    android:orientation="vertical">
+
+
+
+                </LinearLayout>
             </LinearLayout>
 
         </ScrollView>
