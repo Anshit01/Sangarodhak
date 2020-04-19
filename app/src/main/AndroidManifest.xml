@@ -14,12 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TriviaResultActivity"></activity>
-        <activity android:name=".TriviaQuestionActivity" />
-        <activity android:name=".TriviaActivity" />
+        <activity android:name=".TriviaQuestionActivity"
+            android:theme="@style/StatusColorAccent"/>
         <activity android:name=".StatsStateActivity" />
         <activity android:name=".MiniGameActivity" />
-        <activity android:name=".StatsStateActivity" />
         <activity android:name=".StatsIndiaActivity" />
         <activity android:name=".StatsWorldActivity" />
         <activity
